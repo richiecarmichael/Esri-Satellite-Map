@@ -1,0 +1,157 @@
+﻿html, body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Orbitron', sans-serif;
+    color: white;
+}
+
+#top {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 60px;
+    background-color: #2D6CA2;
+    border-bottom: 1px solid black;
+}
+
+#heading {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    text-align: center;
+    font-size: 46px;
+    font-weight: 700;
+    pointer-events: none;
+}
+
+#bottom {
+    position: absolute;
+    top: 60px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+#bottom-left {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: 250px;
+    font-size: 12px;
+    font-weight: 400;
+    background-color: black;
+}
+
+#bottom-left-control {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: 250px;
+    padding: 0px 15px 15px 15px; /* top | right | bottom | left */
+    background-color: #646464;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#bottom-left-information {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: 250px;
+    padding: 15px 15px 15px 15px; /* top | right | bottom | left */
+    background-color: #646464;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-left: -250px;
+}
+
+#bottom-right {
+    position: absolute;
+    top: 0px;
+    left: 250px;
+    bottom: 0px;
+    right: 0px;
+}
+
+#map {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: #000;
+}
+
+#satellite-count {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    pointer-events: none;
+}
+
+#buttonCountry1 > button,
+#buttonCountry2 > button {
+    width:40px;
+}
+
+#infoWindow-title {
+    font-size: 22px;
+    font-weight: 700;
+    pointer-events: none;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#buttonCloseWindow {
+    margin-top: 20px;
+}
+
+#link-nasa,
+#link-n2yo {
+    display: block;
+    color: #fff;
+}
+
+.rc-heading {
+    font-size: 18px;
+    font-weight: 700;
+    pointer-events: none;
+    margin-top: 10px;
+}
+
+.rc-table-heading {
+    font-size: 18px;
+    font-weight: 700;
+    pointer-events: none;
+    width: 120px;
+}
+
+.slider.slider-horizontal {
+    margin-left: 10px;
+    width: 185px;
+}
+
+.slider-tick {
+    opacity: 1;
+}
+
+.btn-default,
+.btn-default.active,
+.btn-default:focus,
+.btn-default:hover {
+    color: #337ab7;
+}
+.btn-default.active {
+     font-weight: 700;
+}

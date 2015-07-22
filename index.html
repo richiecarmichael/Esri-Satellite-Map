@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+    <title>Satellite Map</title>
+    <meta http-equiv='content-type' content='text/html;charset=utf-8' />
+    <meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <meta name='author' content='Esri' />
+    <meta name='keywords' content='' />
+    <meta name='description' content='' />
+    <link type='image/ico' rel='shortcut icon' href='img/favicon.ico' />
+    <link type='image/ico' rel='icon' href='img/favicon.ico' />
+    <link type='text/css' rel='stylesheet' href='//fonts.googleapis.com/css?family=Orbitron:700,400' />
+    <link type='text/css' rel='stylesheet' href='//js.arcgis.com/4.0beta1/esri/css/esri.css'>
+    <link type='text/css' rel='stylesheet' href='css/bootstrap.min.css'>
+    <link type='text/css' rel='stylesheet' href='css/bootstrap-theme.min.css'>
+    <link type='text/css' rel='stylesheet' href='css/bootstrap-slider.min.css'>
+    <link type='text/css' rel='stylesheet' href='index.css' />
+    <script type='text/javascript' src='js/jquery-2.1.4.min.js'></script>
+    <script type='text/javascript' src='js/bootstrap.min.js'></script>
+    <script type='text/javascript' src='js/bootstrap-slider.min.js'></script>
+    <script type='text/javascript' src='js/satellite.min.js'></script>
+    <script type='text/javascript' src='js/jsnumberformatter.min.js'></script>
+    <script type='text/javascript' src='//js.arcgis.com/4.0beta1'></script>
+    <script type='text/javascript' src='index.js'></script>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-10866840-19', 'auto');
+        ga('send', 'pageview');
+    </script>
+</head>
+<body>
+    <div id='bottom'>
+        <div id ='bottom-left'>
+            <div id='bottom-left-control'>
+                <div class='rc-heading'>Quick Links</div>
+                <div class='btn-group'>
+                    <button class='btn btn-default btn-sm dropdown-toggle' type='button' data-toggle='dropdown' aria-expanded='false'>
+                        Presets <span class='caret'></span>
+                    </button>
+                    <ul id='dropdown-presets' class='dropdown-menu' role='menu'>
+                        <li><a href='#' data-value='american-satellites'>American Satellites</a></li>
+                        <li><a href='#' data-value='chinese-satellites'>Chinese Satellites</a></li>
+                        <li><a href='#' data-value='russian-satellites'>Russian Satellites</a></li>
+                        <li class="divider"></li>
+                        <li><a href='#' data-value='gps'>GPS</a></li>
+                        <li><a href='#' data-value='glonass'>GLONASS</a></li>
+                        <li><a href='#' data-value='inmarsat'>Inmarsat</a></li>
+                        <li><a href='#' data-value='landsat'>Landsat</a></li>
+                        <li><a href='#' data-value='digitalglobe'>DigitalGlobe</a></li>
+                        <li class="divider"></li>
+                        <li><a href='#' data-value='low-earth-orbit'>Low Earth Orbit</a></li>
+                        <li><a href='#' data-value='medium-earth-orbit'>Medium Earth Orbi</a></li>
+                        <li><a href='#' data-value='geosynchronous-orbit'>Geosynchronous Orbit</a></li>
+                        <li><a href='#' data-value='geostationary-orbit'>Geostationary Oribit</a></li>
+                        <li><a href='#' data-value='high-earth-orbit'>High Earth Orbit</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" data-value='reset-all'>Reset All</a></li>
+                    </ul>
+                </div>
+                <div class='rc-heading'>Country</div>
+                <div id='buttonCountry1' class='btn-group btn-group-sm' role='group'>
+                    <button type='button' class='btn btn-default active' data-value='none'>All</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='AUS' title='Australia'>AU</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='CA' title='Canada'>CA</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='PRC' title='China'>CN</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='FR' title='France and Italy'>FR</button>
+                </div>
+                <div id='buttonCountry2' class='btn-group btn-group-sm' role='group'>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='JPN' title='Japan'>JP</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='KAZ' title='Kazakhstan'>KZ</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='MALA' title='Malaysia'>MY</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='CIS' title='Russia'>RU</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='US' title='United States of America'>US</button>
+                </div>
+                <div class='rc-heading'>Type</div>
+                <div id='buttonType' class='btn-group btn-group-sm' role='group'>
+                    <button type='button' class='btn btn-default active' data-value='none'>All</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='junk' title='Satellite debris, rockets and boosters'>Junk</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='not-junk' title='Normal satellites'>Not Junk</button>
+                </div>
+                <div class='rc-heading'>Size</div>
+                <div id='buttonSize' class='btn-group btn-group-sm' role='group'>
+                    <button type='button' class='btn btn-default active' data-value='none'>All</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='SMALL' title='Small radar cross-section'>Sm</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='MEDIUM' title='Medium radar cross-section'>Med</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='LARGE' title='Large radar cross-section'>Lg</button>
+                </div>
+                <div class='rc-heading'>Launch Date</div>
+                <input id='slider-launchdate' />
+                <div class='rc-heading'>Orbit Period</div>
+                <input id='slider-period' />
+                <div class='rc-heading'>Inclination</div>
+                <input id='slider-inclination' />
+                <div class='rc-heading'>Apogee</div>
+                <input id='slider-apogee' />
+                <div class='rc-heading'>Perigee</div>
+                <input id='slider-perigee' />
+            </div>
+            <div id='bottom-left-information'>
+                <div id='infoWindow-title'></div>
+                <table>
+                    <tr>
+                        <td class='rc-table-heading'>NORAD</td>
+                        <td class='rc-table-value' id='infoWindow-norad'></td>
+                    </tr>
+                    <tr>
+                        <td class='rc-table-heading'>COSPAR</td>
+                        <td class='rc-table-value' id='infoWindow-int'></td>
+                    </tr>
+                    <tr>
+                        <td class='rc-table-heading'>Country</td>
+                        <td class='rc-table-value' id='infoWindow-country'></td>
+                    </tr>
+                    <tr>
+                        <td class='rc-table-heading'>Period</td>
+                        <td class='rc-table-value' id='infoWindow-period'></td>
+                    </tr>
+                    <tr>
+                        <td class='rc-table-heading'>Inclination</td>
+                        <td class='rc-table-value' id='infoWindow-inclination'></td>
+                    </tr>
+                    <tr>
+                        <td class='rc-table-heading'>Apogee</td>
+                        <td class='rc-table-value' id='infoWindow-apogee'></td>
+                    </tr>
+                    <tr>
+                        <td class='rc-table-heading'>Perigee</td>
+                        <td class='rc-table-value' id='infoWindow-perigee'></td>
+                    </tr>
+                    <tr>
+                        <td class='rc-table-heading'>Size</td>
+                        <td class='rc-table-value' id='infoWindow-size'></td>
+                    </tr>
+                    <tr>
+                        <td class='rc-table-heading'>Launch</td>
+                        <td class='rc-table-value' id='infoWindow-launch'></td>
+                    </tr>
+                </table>
+                <div class='rc-heading'>Trajectory</div>
+                <div id='buttonTrajectory' class='btn-group btn-group-sm' role='group'>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='3600000' title='Small radar cross-section'>1 hour</button>
+                    <button type='button' class='btn btn-default active' data-toggle='tooltip' data-placement='top' data-value='86400000' title='Medium radar cross-section'>1 day</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='604800000' title='Large radar cross-section'>1 week</button>
+                </div>
+                <div class='rc-heading'>Links</div>
+                <a id='link-nasa' href='#' target='_blank'>NASA</a>
+                <a id='link-n2yo' href='#' target='_blank'>N2YO</a>
+                <button id='buttonCloseWindow' type='button' class='btn btn-default'>Back</button>
+            </div>
+        </div>
+        <div id='bottom-right'>
+            <div id='map'></div>
+            <div id='satellite-count'></div>
+        </div>
+    </div>
+    <div id='top'>
+        <div id='heading'>Satellite Map</div>
+    </div>
+</body>
+</html>
