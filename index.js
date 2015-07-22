@@ -635,7 +635,7 @@ function (
         function loadSatellites() {
             var defer = new $.Deferred();
             $.get('data/tle.txt', function (data) {
-                var lines = data.split('\r\n');
+                var lines = data.split('\n');
                 var count = (lines.length / 2).toFixed(0);
                 for (var i = 0; i < count; i++) {
                     var line1 = lines[i * 2 + 0];
