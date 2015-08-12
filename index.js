@@ -670,7 +670,7 @@ function (
             var defer = new $.Deferred();
             $.get('data/oio.txt', function (data) {
                 var metadata = {};
-                var lines = data.split('\r\n');
+                var lines = data.split('\n');
                 $.each(lines, function (i) {
                     if (i === 0) { return true; }
                     var items = this.split(',');
