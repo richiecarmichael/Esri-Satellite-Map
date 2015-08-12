@@ -26,6 +26,6 @@ Below, showing all 14,024 man-made satellites. Geostationary satellites are high
 
 ![](./img/satellite.jpg)
 
-The following animation demonstrates the selection of all Russian satellites and the picking of discarded (Briz-M)[https://en.wikipedia.org/wiki/Briz-M] rocket booster with the international designation of (2008-039C)[http://www.n2yo.com/satellite/?s=33280].
+The following animation demonstrates the selection of all Russian satellites and the picking of discarded [Briz-M](https://en.wikipedia.org/wiki/Briz-M) rocket booster with the international designation of [2008-039C](http://www.n2yo.com/satellite/?s=33280).
 
-![](./img/satellite-small.gif)
+![](./img/satellite-large.gif)
