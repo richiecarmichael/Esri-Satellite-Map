@@ -1,4 +1,4 @@
-# Esri-Satellite-Map
+# Satellite Map
 
 This application displays ALL known man-made satellites orbiting the Earth in a 3d viewer.
 
@@ -23,4 +23,9 @@ Click [here](http://richiecarmichael.github.io/sat/index.html) or [here](http://
 Satellite descriptions and [ephemeris](https://en.wikipedia.org/wiki/Ephemeris) are sourced from [Space-Tracker](https://www.space-track.org) a site maintained by the [Joint Functional Component Command for Space](https://www.stratcom.mil/factsheets/7/JFCC_Space/). The [satellite-js](https://github.com/shashwatak/satellite-js) JavaScript library is used to convert a downloaded [TLE](https://en.wikipedia.org/wiki/Two-line_element_set) into geographic locations.
 
 Below, showing all 14,024 man-made satellites. Geostationary satellites are highlighted in red and the 24 hour trajectory is displayed for the [ESA](http://www.esa.int/ESA) satellite [GIOVE-B](https://en.wikipedia.org/wiki/GIOVE#GIOVE-B).
-![](./satellite.jpg)
+
+![](./img/satellite.jpg)
+
+The following animation demonstrates the selection of all Russian satellites and the picking of discarded (Briz-M)[https://en.wikipedia.org/wiki/Briz-M] rocket booster with the international designation of (2008-039C)[http://www.n2yo.com/satellite/?s=33280].
+
+![](./img/satellite-small.gif)
