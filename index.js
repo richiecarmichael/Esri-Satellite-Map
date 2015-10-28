@@ -410,7 +410,7 @@ function (
             _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array(color), _gl.STATIC_DRAW);
 
             _gl.bindBuffer(_gl.ARRAY_BUFFER, _sizeLineBuffer);
-            _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array(color), _gl.STATIC_DRAW);
+            _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array(size), _gl.STATIC_DRAW);
         }
 
         function hideTrajectory() {
@@ -762,6 +762,16 @@ function (
             ]);
         }
 
+        // Format strings
+        String.prototype.format = function () {
+            var s = this;
+            var i = arguments.length;
+            while (i--) {
+                s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+            }
+            return s;
+        };
+
         // Draw loop
         Scheduler.addFrameTask({
             postRender: function (time, deltaTime, timeFromBeginning, spendInFrame) {
@@ -805,15 +815,5 @@ function (
                 }
             }
         });
-
-        // Format strings
-        String.prototype.format = function () {
-            var s = this;
-            var i = arguments.length;
-            while (i--) {
-                s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
-            }
-            return s;
-        };
     });
 });
