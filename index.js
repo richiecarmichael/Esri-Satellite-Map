@@ -10,7 +10,6 @@ require([
     'esri/views/SceneView',
     'esri/geometry/Point',
     'esri/geometry/SpatialReference',
-    'dojo/on',
     'dojo/domReady!'
 ],
 function (
@@ -19,45 +18,63 @@ function (
     Scheduler,
     SceneView,
     Point,
-    SpatialReference,
-    on
+    SpatialReference
     ) {
     $(document).ready(function () {
         // Enforce strict mode
         'use strict';
 
-        var GPS = [20959, 22877, 23953, 24876, 25933, 26360, 26407, 26605, 26690, 27663, 27704, 28129, 28190, 28361, 28474, 28874, 29486, 29601, 32260, 32384, 32711, 35752, 36585, 37753, 38833, 39166, 39533, 39741, 40105, 40294, 40534];
-        var GLONASS = [28915, 29672, 29670, 29671, 32276, 32275, 32393, 32395, 36111, 36112, 36113, 36400, 36402, 36401, 37139, 37138, 37137, 37829, 37869, 37867, 37868, 39155, 39620, 40001];
-        var INMARSAT = [20918, 21149, 21814, 21940, 23839, 24307, 24674, 24819, 25153, 28628, 28899, 33278, 40384, 39476];
-        var LANDSAT = [25682, 39084];
+        // jQuery formating function
+        $.format = function (f, e) {
+            $.each(e, function (i) {
+                f = f.replace(new RegExp('\\{' + i + '\\}', 'gm'), this);
+            });
+            return f;
+        };
+
+        // Well known satellite constellations.
+        var GPS          = [20959, 22877, 23953, 24876, 25933, 26360, 26407, 26605, 26690, 27663, 27704, 28129, 28190, 28361, 28474, 28874, 29486, 29601, 32260, 32384, 32711, 35752, 36585, 37753, 38833, 39166, 39533, 39741, 40105, 40294, 40534];
+        var GLONASS      = [28915, 29672, 29670, 29671, 32276, 32275, 32393, 32395, 36111, 36112, 36113, 36400, 36402, 36401, 37139, 37138, 37137, 37829, 37869, 37867, 37868, 39155, 39620, 40001];
+        var INMARSAT     = [20918, 21149, 21814, 21940, 23839, 24307, 24674, 24819, 25153, 28628, 28899, 33278, 40384, 39476];
+        var LANDSAT      = [25682, 39084];
         var DIGITALGLOBE = [25919, 32060, 33331, 35946, 40115];
+
+        // Orbital altitude definitions
         var LOW_ORBIT = 2000;
         var GEOSYNCHRONOUS_ORBIT = 35786;
         var TRAJECTORY_SEGMENTS = 1000;
+
+        // Satellite database urls
         var NASA_SATELLITE_DATABASE = 'http://nssdc.gsfc.nasa.gov/nmc/masterCatalog.do?sc={0}'; // use International id
         var N2YO_SATELLITE_DATABASE = 'http://www.n2yo.com/satellite/?s={0}';                   // use NORAD id
 
+        // Rendering variables
         var _gl = null;
         var _camera = null;
         var _shader = null;
         var _positionBuffer = null;
         var _colorBuffer = null;
         var _sizeBuffer = null;
-
         var _positionLineBuffer = null;
         var _colorLineBuffer = null;
         var _sizeLineBuffer = null;       
         var _selectedSatellite = null;
 
+        // The array of all upload satellites
         var _satellites = [];
 
         // Create map and view
-        var _map = new Map({
-            basemap: 'satellite'
-        });
         var _view = new SceneView({
             container: 'map',
-            map: _map,
+            ui: {
+                components: [
+                    'zoom',
+                    'compass'
+                ]
+            },
+            map: new Map({
+                basemap: 'satellite'
+            }),
             constraints: {
                 altitude: {
                     max: 12000000000
@@ -96,11 +113,11 @@ function (
             _camera = _view._stage.getCamera();
 
             // Load shaders
-            initShaders();
+            loadShaders();
 
             // Load satellites
             loadSatellites().done(function () {
-                initBuffer();
+                //initBuffer();
                 updateBuffers();
                 loadMetadata().done(function (metadata) {
                     $.each(_satellites, function () {
@@ -108,9 +125,14 @@ function (
                     });
                     updateCounter();
                 });
+
+                // Add custom renderer
+                Scheduler.addFrameTask({
+                    postRender: postRender
+                });
             });
         });
-        _view.on('tap', function (e) {
+        _view.on('click', function (e) {
             // Exit if invalid or missing map point
             if (!e || !e.screenPoint) { return; }
 
@@ -136,7 +158,7 @@ function (
             if (locations.length === 0) {
                 _selectedSatellite = null;
                 hideTrajectory();
-                hideIdentifyWindow();
+                showDialog('main');
                 updateBuffers();
                 return;
             }
@@ -163,15 +185,41 @@ function (
             }
             location.highlighted = true;
             _selectedSatellite = location;
-            showIdentifyWindow();
+
+            $('#infoWindow-title').html(_selectedSatellite.metadata.name);
+            $('#infoWindow-norad').html(_selectedSatellite.id);
+            $('#infoWindow-int').html(_selectedSatellite.metadata.int);
+            $('#infoWindow-name').html(_selectedSatellite.metadata.name);
+            $('#infoWindow-country').html(_selectedSatellite.metadata.country);
+            $('#infoWindow-period').html(_selectedSatellite.metadata.period + ' min');
+            $('#infoWindow-inclination').html(_selectedSatellite.metadata.inclination + '°');
+            $('#infoWindow-apogee').html(_selectedSatellite.metadata.apogee + ' km');
+            $('#infoWindow-perigee').html(_selectedSatellite.metadata.perigee + ' km');
+            $('#infoWindow-size').html(_selectedSatellite.metadata.size);
+            $('#infoWindow-launch').html(_selectedSatellite.metadata.launch);
+            $('#link-nasa').attr('href', $.format(NASA_SATELLITE_DATABASE, [_selectedSatellite.metadata.int]));
+            $('#link-n2yo').attr('href', $.format(N2YO_SATELLITE_DATABASE, [_selectedSatellite.id]));
+
+            showDialog('info');
             showTrajectory();
             updateBuffers();
         });
 
+        $('#bottom-left-help a').attr('target', '_blank');
+        $('#bottom-left-about a').attr('target', '_blank');
+
         $('#buttonCloseWindow').click(function () {
             _selectedSatellite = null;
             hideTrajectory();
-            hideIdentifyWindow();
+            showDialog('main');
+        });
+
+        $('#button-help').click(function () {
+            showDialog('help');
+        });
+
+        $('#button-about').click(function () {
+            showDialog('about');
         });
 
         $('#buttonTrajectory > button').click(function () {
@@ -358,28 +406,18 @@ function (
             updateCounter();
         });
         
-        function showIdentifyWindow() {
-            $('#infoWindow-title').html(_selectedSatellite.metadata.name);
-            $('#infoWindow-norad').html(_selectedSatellite.id);
-            $('#infoWindow-int').html(_selectedSatellite.metadata.int);
-            $('#infoWindow-name').html(_selectedSatellite.metadata.name);
-            $('#infoWindow-country').html(_selectedSatellite.metadata.country);
-            $('#infoWindow-period').html(_selectedSatellite.metadata.period + ' min');
-            $('#infoWindow-inclination').html(_selectedSatellite.metadata.inclination + '°');
-            $('#infoWindow-apogee').html(_selectedSatellite.metadata.apogee + ' km');
-            $('#infoWindow-perigee').html(_selectedSatellite.metadata.perigee + ' km');
-            $('#infoWindow-size').html(_selectedSatellite.metadata.size);
-            $('#infoWindow-launch').html(_selectedSatellite.metadata.launch);
-            $('#link-nasa').attr('href', NASA_SATELLITE_DATABASE.format(_selectedSatellite.metadata.int));
-            $('#link-n2yo').attr('href', N2YO_SATELLITE_DATABASE.format(_selectedSatellite.id));
-            $('#bottom-left-control').animate({ marginLeft: '-250px' }, 300, 'swing', function () {
-                $('#bottom-left-information').animate({ marginLeft: '0px' }, 300, 'swing');
-            });
-        }
-
-        function hideIdentifyWindow() {
-            $('#bottom-left-information').animate({ marginLeft: '-250px' }, 300, 'swing', function () {
-                $('#bottom-left-control').animate({ marginLeft: '0px' }, 300, 'swing');
+        function showDialog(name) {
+            $('.rc-panel[data-panel!="' + name + '"]').animate({'margin-left': '-250px'}, {
+                duration: 300,
+                easing: 'swing',
+                queue: false,
+                complete: function () {
+                    $('.rc-panel[data-panel="' + name + '"]').animate({ 'margin-left': '0px' }, {
+                        duration: 300,
+                        easing: 'swing',
+                        queue: false
+                    });
+                }
             });
         }
 
@@ -527,21 +565,23 @@ function (
                     selected++;
                 }
             });
-            var options = new JsNumberFormatter.formatNumberOptions();
-            var total = JsNumberFormatter.formatNumber(_satellites.length, options, false);
             if (selected === 0) {
                 $('#satellite-count').html(
-                    '{0} satellites loaded'.format(total)
+                    $.format('{0} satellites loaded', [
+                        d3_format.format(',d')(_satellites.length)
+                    ])
                 );
             } else {
-                var s = selected === 0 ? '0' : JsNumberFormatter.formatNumber(selected, options, false);
                 $('#satellite-count').html(
-                    '{0} of {1} satellites found'.format(s, total)
+                    $.format('{0} of {1} satellites found', [
+                        d3_format.format(',d')(selected),
+                        d3_format.format(',d')(_satellites.length)
+                    ])
                 );
             }
         }
 
-        function initShaders() {
+        function loadShaders() {
             // Compile fragment and vertex shaders
             var v = 'uniform mat4 uPMatrix;' +
                     'uniform mat4 uVMatrix;' +
@@ -566,11 +606,12 @@ function (
             _gl.compileShader(vshader);
             _gl.compileShader(fshader);
 
-            // Create and assign shader
+            // Create and attach shaders
             _shader = _gl.createProgram();
             _gl.attachShader(_shader, vshader);
             _gl.attachShader(_shader, fshader);
             
+            // Compile and load shader
             _gl.linkProgram(_shader);
             if (!_gl.getProgramParameter(_shader, _gl.LINK_STATUS)) {
                 alert('Could not initialise shaders');
@@ -581,24 +622,24 @@ function (
             _shader.pMatrixUniform = _gl.getUniformLocation(_shader, 'uPMatrix');
             _shader.vMatrixUniform = _gl.getUniformLocation(_shader, 'uVMatrix');
 
-            // 
+            // Assign position vertex buffer
             _shader.position = _gl.getAttribLocation(_shader, 'aPosition');
             _gl.enableVertexAttribArray(_shader.position);
 
-            //
+            // Assign color vertex buffer
             _shader.color = _gl.getAttribLocation(_shader, 'aColor');
             _gl.enableVertexAttribArray(_shader.color);
 
-            //
+            // Assign size vertex buffer
             _shader.size = _gl.getAttribLocation(_shader, 'aSize');
             _gl.enableVertexAttribArray(_shader.size);
-        }
 
-        function initBuffer() {
+            // Create satellite buffer
             _positionBuffer = _gl.createBuffer();
             _colorBuffer = _gl.createBuffer();
             _sizeBuffer = _gl.createBuffer();
 
+            // Create trajectory buffer
             _positionLineBuffer = _gl.createBuffer();
             _colorLineBuffer = _gl.createBuffer();
             _sizeLineBuffer = _gl.createBuffer();
@@ -671,8 +712,7 @@ function (
             $.get('data/oio.txt', function (data) {
                 var metadata = {};
                 var lines = data.split('\n');
-                $.each(lines, function (i) {
-                    if (i === 0) { return true; }
+                $.each(lines, function () {
                     var items = this.split(',');
                     var int = items[0];
                     var name = items[1];
@@ -762,58 +802,43 @@ function (
             ]);
         }
 
-        // Format strings
-        String.prototype.format = function () {
-            var s = this;
-            var i = arguments.length;
-            while (i--) {
-                s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+        function postRender() {
+            // Exit if no webgl context
+            if (_gl === null) { return; }
+            if (_positionBuffer === null) { return; }
+
+            // Reassign shader program
+            _gl.useProgram(_shader);
+
+            // Assign projection and view matrices
+            _gl.uniformMatrix4fv(_shader.pMatrixUniform, false, _camera.projectionMatrix);
+            _gl.uniformMatrix4fv(_shader.vMatrixUniform, false, _camera.viewMatrix);
+
+            // Enable vertex arrays
+            _gl.enableVertexAttribArray(_shader.position);
+            _gl.enableVertexAttribArray(_shader.color);
+            _gl.enableVertexAttribArray(_shader.size);
+
+            // Draw satellites
+            render(_gl.POINTS, _positionBuffer, _colorBuffer, _sizeBuffer, _satellites.length);
+
+            // Draw trajectory
+            if (_selectedSatellite !== null) {
+                render(_gl.LINE_STRIP, _positionLineBuffer, _colorLineBuffer, _sizeLineBuffer, TRAJECTORY_SEGMENTS);
             }
-            return s;
-        };
+        }
 
-        // Draw loop
-        Scheduler.addFrameTask({
-            postRender: function (time, deltaTime, timeFromBeginning, spendInFrame) {
-                if (_gl === null) { return; }
-                if (_positionBuffer === null) { return; }
+        function render(type, positions, colors, sizes, length) {
+            _gl.bindBuffer(_gl.ARRAY_BUFFER, positions);
+            _gl.vertexAttribPointer(_shader.position, 3, _gl.FLOAT, false, 0, 0);
 
-                // Reassign shader program
-                _gl.useProgram(_shader);
+            _gl.bindBuffer(_gl.ARRAY_BUFFER, colors);
+            _gl.vertexAttribPointer(_shader.color, 4, _gl.FLOAT, false, 0, 0);
 
-                _gl.uniformMatrix4fv(_shader.pMatrixUniform, false, _camera.projectionMatrix);
-                _gl.uniformMatrix4fv(_shader.vMatrixUniform, false, _camera.viewMatrix);
+            _gl.bindBuffer(_gl.ARRAY_BUFFER, sizes);
+            _gl.vertexAttribPointer(_shader.size, 1, _gl.FLOAT, false, 0, 0);
 
-                _gl.bindBuffer(_gl.ARRAY_BUFFER, _positionBuffer);
-                _gl.enableVertexAttribArray(_shader.position);
-                _gl.vertexAttribPointer(_shader.position, 3, _gl.FLOAT, false, 0, 0);
-
-                _gl.bindBuffer(_gl.ARRAY_BUFFER, _colorBuffer);
-                _gl.enableVertexAttribArray(_shader.color);
-                _gl.vertexAttribPointer(_shader.color, 4, _gl.FLOAT, false, 0, 0);
-
-                _gl.bindBuffer(_gl.ARRAY_BUFFER, _sizeBuffer);
-                _gl.enableVertexAttribArray(_shader.size);
-                _gl.vertexAttribPointer(_shader.size, 1, _gl.FLOAT, false, 0, 0);
-
-                _gl.drawArrays(_gl.POINTS, 0, _satellites.length);
-
-                if (_selectedSatellite !== null) {
-                    _gl.bindBuffer(_gl.ARRAY_BUFFER, _positionLineBuffer);
-                    _gl.enableVertexAttribArray(_shader.position);
-                    _gl.vertexAttribPointer(_shader.position, 3, _gl.FLOAT, false, 0, 0);
-
-                    _gl.bindBuffer(_gl.ARRAY_BUFFER, _colorLineBuffer);
-                    _gl.enableVertexAttribArray(_shader.color);
-                    _gl.vertexAttribPointer(_shader.color, 4, _gl.FLOAT, false, 0, 0);
-
-                    _gl.bindBuffer(_gl.ARRAY_BUFFER, _sizeLineBuffer);
-                    _gl.enableVertexAttribArray(_shader.size);
-                    _gl.vertexAttribPointer(_shader.size, 1, _gl.FLOAT, false, 0, 0);
-
-                    _gl.drawArrays(_gl.LINE_STRIP, 0, TRAJECTORY_SEGMENTS);
-                }
-            }
-        });
+            _gl.drawArrays(type, 0, length);
+        }
     });
 });

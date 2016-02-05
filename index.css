@@ -1,4 +1,9 @@
-﻿html, body {
+﻿/* -----------------------------------------------------------------------------------
+   Developed by the Applications Prototype Lab
+   (c) 2015 Esri | http://www.esri.com/legal/software-license  
+----------------------------------------------------------------------------------- */
+
+html, body {
     overflow: hidden;
     margin: 0;
     padding: 0;
@@ -7,30 +12,66 @@
     color: white;
 }
 
+*:focus {
+    outline: none;
+}
+
 #top {
     position: absolute;
     top: 0px;
     left: 0px;
     right: 0px;
-    height: 60px;
+    height: 50px;
     background-color: #2D6CA2;
     border-bottom: 1px solid black;
+}
+
+#logo-esri {
+    position: absolute;
+    left: 0px;
+    top: 0px;
 }
 
 #heading {
     position: absolute;
     left: 0px;
-    top: 0px;
+    top: -5px;
     right: 0px;
     text-align: center;
-    font-size: 46px;
+    font-size: 40px;
     font-weight: 700;
     pointer-events: none;
 }
 
+#buttons {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.rc-button {
+    display: inline-block;
+    height: 50px;
+    cursor: pointer;
+    pointer-events: all;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.5);
+    margin-left: 1px;
+    padding-top: 13px;
+    font-size: 16px;
+    font-weight: 700;
+    width: 70px;
+    text-align: center;
+}
+
+.rc-button:hover {
+    background-color:rgba(255, 255, 255, 0.5);
+    color: rgba(255, 0, 0, 0.5);
+}
+
 #bottom {
     position: absolute;
-    top: 60px;
+    top: 50px;
     left: 0px;
     right: 0px;
     bottom: 0px;
@@ -47,28 +88,25 @@
     background-color: black;
 }
 
-#bottom-left-control {
+.rc-readable {
+    font-family: 'Oswald', sans-serif;
+    font-size:14px;
+    font-weight:400;
+}
+
+.rc-panel {
     position: absolute;
     top: 0px;
     left: 0px;
     bottom: 0px;
     width: 250px;
-    padding: 0px 15px 15px 15px; /* top | right | bottom | left */
+    padding: 0px 15px 15px 15px;
     background-color: #646464;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
-#bottom-left-information {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    bottom: 0px;
-    width: 250px;
-    padding: 15px 15px 15px 15px; /* top | right | bottom | left */
-    background-color: #646464;
-    overflow-x: hidden;
-    overflow-y: auto;
+.rc-panel:not([data-panel=main]) {
     margin-left: -250px;
 }
 
@@ -105,11 +143,12 @@
     width:40px;
 }
 
-#infoWindow-title {
+.rc-title {
     font-size: 22px;
     font-weight: 700;
     pointer-events: none;
     text-align: center;
+    margin-top: 15px;
     margin-bottom: 10px;
 }
 
@@ -117,10 +156,8 @@
     margin-top: 20px;
 }
 
-#link-nasa,
-#link-n2yo {
+.rc-vertical {
     display: block;
-    color: #fff;
 }
 
 .rc-heading {
@@ -154,4 +191,11 @@
 }
 .btn-default.active {
      font-weight: 700;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+    color: #bbc0ff;
 }
