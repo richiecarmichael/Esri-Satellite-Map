@@ -12,10 +12,12 @@ Click [here](http://richiecarmichael.github.io/sat/index.html) or [here](http://
   - A useful and comprehensive UI framework. This application leveraged a subset of bootstrap pertaining to buttons and input elements.
 * [Bootstrap Slider](https://github.com/seiyria/bootstrap-slider) by [Kyle J. Kemp](https://github.com/seiyria)
   - A bootstrap based slider.
+* [d3-format](https://github.com/d3/d3-format) by [Mike Bostock](http://bost.ocks.org/mike/)
+  - Format numbers for human consumption.
+* [Google Fonts](https://www.google.com/fonts), specifically [Orbitron](https://www.google.com/fonts/specimen/Orbitron) and [Oswald](https://www.google.com/fonts/specimen/Oswald)
+  - "A web with web fonts is more beautiful, readable, accessible and open."
 * [jQuery](http://jquery.com/) by jQuery Foundataion Inc
   - A JavaScript framework for DOM manipulation and a foundation for many other frameworks.
-* [jQuery Number Formatter](https://github.com/andrewgp/jsNumberFormatter) by [Andrew G Parry](https://github.com/andrewgp)
-  - A pure JS implementation of number parsing and formatting.
 * [satellite-js](https://github.com/shashwatak/satellite-js) by [Shashwat Kandadai](https://github.com/shashwatak) and UCSC
   - Modular set of functions for SGP4 and SDP4 propagation of TLEs.
 
