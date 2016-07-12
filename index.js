@@ -207,11 +207,16 @@ function (
 
         $('#bottom-left-help a').attr('target', '_blank');
         $('#bottom-left-about a').attr('target', '_blank');
+        $('#link-nasa, #link-n2yo').attr('target', '_blank');
 
         $('#buttonCloseWindow').click(function () {
+            $.each(_satellites, function () {
+                this.highlighted = false;
+            });
             _selectedSatellite = null;
             hideTrajectory();
             showDialog('main');
+            updateBuffers();
         });
 
         $('#button-help').click(function () {
