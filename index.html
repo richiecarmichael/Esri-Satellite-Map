@@ -1,10 +1,10 @@
-﻿<!-- ===============================================================
-   Developed by the Applications Prototype Lab
-   (c) 2015 Esri | http://www.esri.com/legal/software-license
-=============================================================== -->
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head>
+    <!-- ===============================================================
+       Developed by the Applications Prototype Lab
+       (c) 2015 Esri | http://www.esri.com/legal/software-license
+    =============================================================== -->
     <title>Satellite Map</title>
     <meta http-equiv='content-type' content='text/html;charset=utf-8' />
     <meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no' />
@@ -17,10 +17,10 @@
     <meta name='twitter:site' content='@kiwirichie'>
     <meta name='twitter:creator' content='@kiwirichie'>
     <meta name='twitter:description' content='Maps the current position and trajectory of 14,000 manmade objects orbiting the Earth.'>
-    
+
     <meta property='og:title' content='Satellite Map' />
     <meta property='og:description' content='Maps the current position and trajectory of 14,000 manmade objects orbiting the Earth.' />
-    <meta property='og:url' content='http://maps.esri.com/rc/sat2/index.html' />
+    <meta property='og:url' content='https://maps.esri.com/rc/sat2/index.html' />
 
     <link type='image/ico' rel='shortcut icon' href='img/favicon.ico' />
     <link type='image/ico' rel='icon' href='img/favicon.ico' />
@@ -36,7 +36,6 @@
     <script type='text/javascript' src='js/bootstrap.min.js'></script>
     <script type='text/javascript' src='js/bootstrap-slider.min.js'></script>
     <script type='text/javascript' src='js/satellite.min.js'></script>
-    <script type='text/javascript' src='js/d3-format.min.js'></script>
     <script type='text/javascript' src='//js.arcgis.com/4.0beta1'></script>
     <script type='text/javascript' src='index.js'></script>
     <script>
@@ -52,42 +51,43 @@
 </head>
 <body>
     <div id='bottom'>
-        <div id ='bottom-left'>
+        <div id='bottom-left'>
             <div id='bottom-left-control' class='rc-panel' data-panel='main'>
                 <div class='rc-heading'>Quick Links</div>
-                <div class='btn-group'>
-                    <button class='btn btn-default btn-sm dropdown-toggle' type='button' data-toggle='dropdown' aria-expanded='false'>
-                        Presets <span class='caret'></span>
-                    </button>
-                    <ul id='dropdown-presets' class='dropdown-menu' role='menu'>
-                        <li><a href='#' data-value='american-satellites'>American Satellites</a></li>
-                        <li><a href='#' data-value='chinese-satellites'>Chinese Satellites</a></li>
-                        <li><a href='#' data-value='russian-satellites'>Russian Satellites</a></li>
-                        <li class='divider'></li>
-                        <li><a href='#' data-value='gps'>GPS</a></li>
-                        <li><a href='#' data-value='glonass'>GLONASS</a></li>
-                        <li><a href='#' data-value='inmarsat'>Inmarsat</a></li>
-                        <li><a href='#' data-value='landsat'>Landsat</a></li>
-                        <li><a href='#' data-value='digitalglobe'>DigitalGlobe</a></li>
-                        <li class='divider'></li>
-                        <li><a href='#' data-value='low-earth-orbit'>Low Earth Orbit</a></li>
-                        <li><a href='#' data-value='medium-earth-orbit'>Medium Earth Orbi</a></li>
-                        <li><a href='#' data-value='geosynchronous-orbit'>Geosynchronous Orbit</a></li>
-                        <li><a href='#' data-value='geostationary-orbit'>Geostationary Oribit</a></li>
-                        <li><a href='#' data-value='high-earth-orbit'>High Earth Orbit</a></li>
-                        <li class='divider'></li>
-                        <li><a href='#' data-value='reset-all'>Reset All</a></li>
-                    </ul>
+                <div class='btn-group btn-group-sm'>
+                    <div class='btn-group btn-group-sm'>
+                        <button class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown' aria-expanded='false'>
+                            Presets <span class='caret'></span>
+                        </button>
+                        <ul id='dropdown-presets' class='dropdown-menu' role='menu'>
+                            <li><a href='#' data-value='american-satellites'>American Satellites</a></li>
+                            <li><a href='#' data-value='chinese-satellites'>Chinese Satellites</a></li>
+                            <li><a href='#' data-value='russian-satellites'>Russian Satellites</a></li>
+                            <li class='divider'></li>
+                            <li><a href='#' data-value='gps'>GPS</a></li>
+                            <li><a href='#' data-value='glonass'>GLONASS</a></li>
+                            <li><a href='#' data-value='inmarsat'>Inmarsat</a></li>
+                            <li><a href='#' data-value='landsat'>Landsat</a></li>
+                            <li><a href='#' data-value='digitalglobe'>DigitalGlobe</a></li>
+                            <li class='divider'></li>
+                            <li><a href='#' data-value='low-earth-orbit'>Low Earth Orbit</a></li>
+                            <li><a href='#' data-value='medium-earth-orbit'>Medium Earth Orbi</a></li>
+                            <li><a href='#' data-value='geosynchronous-orbit'>Geosynchronous Orbit</a></li>
+                            <li><a href='#' data-value='geostationary-orbit'>Geostationary Oribit</a></li>
+                            <li><a href='#' data-value='high-earth-orbit'>High Earth Orbit</a></li>
+                        </ul>
+                    </div>
+                    <button id='buttonReset' type='button' class='btn btn-default' data-toggle='tooltip' data-placement='bottom' title='Resets UI and clears selected satellites'>Reset</button>
                 </div>
                 <div class='rc-heading'>Country</div>
-                <div id='buttonCountry1' class='btn-group btn-group-sm' role='group'>
+                <div class='btn-group btn-group-sm rc-country' role='group'>
                     <button type='button' class='btn btn-default active' data-value='none'>All</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='AUS' title='Australia'>AU</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='CA' title='Canada'>CA</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='PRC' title='China'>CN</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='FR' title='France and Italy'>FR</button>
                 </div>
-                <div id='buttonCountry2' class='btn-group btn-group-sm' role='group'>
+                <div class='btn-group btn-group-sm rc-country' role='group'>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='JPN' title='Japan'>JP</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='KAZ' title='Kazakhstan'>KZ</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='MALA' title='Malaysia'>MY</button>
@@ -95,13 +95,13 @@
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='US' title='United States of America'>US</button>
                 </div>
                 <div class='rc-heading'>Type</div>
-                <div id='buttonType' class='btn-group btn-group-sm' role='group'>
+                <div class='btn-group btn-group-sm rc-type' role='group'>
                     <button type='button' class='btn btn-default active' data-value='none'>All</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='junk' title='Satellite debris, rockets and boosters'>Junk</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='not-junk' title='Normal satellites'>Not Junk</button>
                 </div>
                 <div class='rc-heading'>Size</div>
-                <div id='buttonSize' class='btn-group btn-group-sm' role='group'>
+                <div class='btn-group btn-group-sm rc-size' role='group'>
                     <button type='button' class='btn btn-default active' data-value='none'>All</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='SMALL' title='Small radar cross-section'>Sm</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='MEDIUM' title='Medium radar cross-section'>Med</button>
@@ -181,19 +181,18 @@
                     <p>Perhaps the most surprising fact for users of this application is the large proportion of orbital objects classified as <i>junk</i>. Approximately 3/4 of manmade objects are spent rocket boosters or debris from satellite collisions.</p>
                     <p>It is important to note that satellite positions are derived from an ephemeris database downloaded in May, 2015. As such this app will not display satellites launched since then or reflect intentionally or unintentionally orbital adjustments. Similarly atmospheric friction and gravitational forces are likely to influence orbital position. However the different between projected and actual position is unlikely to be perceptible at the scale used.</</p>
                     <p>If you encounter any problems or have suggestions for improvements please don't hesiste to let us know <a href='https://github.com/richiecarmichael/Esri-Satellite-Map/issues'>here</a>.</p>
-                </div>        
+                </div>
             </div>
             <div id='bottom-left-about' class='rc-panel' data-panel='about'>
                 <div class='rc-title'>ABOUT</div>
                 <div class='rc-readable'>
-                    <p>This application was designed and developed by <a href='http://www.esri.com'>Esri</a>'s <a href='http://blogs.esri.com/esri/apl/'>Applications Prototype Lab</a> in Redlands, California. The application was built using the following technologies:</p>
+                    <p>This application was designed and developed by <a href='https://www.esri.com'>Esri</a>'s <a href='https://blogs.esri.com/esri/apl/'>Applications Prototype Lab</a> in Redlands, California. The application was built using the following technologies:</p>
                     <ul style='margin-left: -20px;'>
-                        <li><a href='https://developers.arcgis.com/javascript/'>ArcGIS API for JavaScript</a> (<a href='https://developers.arcgis.com/javascript/beta/'>beta</a>) by Esri</li>
-                        <li><a href='http://getbootstrap.com/'>Bootstrap</a> by <a href='https://twitter.com/'>Twitter Inc</a></li>
+                        <li><a href='https://developers.arcgis.com/javascript/'>ArcGIS API for JavaScript</a> (<a href='https://developers.arcgis.com/javascript/latest/guide/index.html'>version 4</a>) by Esri</li>
+                        <li><a href='https://getbootstrap.com/'>Bootstrap</a> by <a href='https://twitter.com/'>Twitter Inc</a></li>
                         <li><a href='https://github.com/seiyria/bootstrap-slider'>Bootstrap Slider</a> by <a href='https://github.com/seiyria'>Kyle J. Kemp</a></li>
-                        <li><a href='https://github.com/d3/d3-format'>d3-format</a> by <a href='http://bost.ocks.org/mike/'>Mike Bostock</a></li>
                         <li><a href='https://www.google.com/fonts'>Google Fonts</a>, specifically <a href='https://www.google.com/fonts/specimen/Orbitron'>Orbitron</a> and <a href='https://www.google.com/fonts/specimen/Oswald'>Oswald</a></li>
-                        <li><a href='http://jquery.com/'>jQuery</a> by the jQuery Foundation Inc.</li>
+                        <li><a href='https://jquery.com/'>jQuery</a> by the jQuery Foundation Inc.</li>
                         <li><a href='https://github.com/shashwatak/satellite-js'>satellite-js</a> by <a href='https://github.com/shashwatak'>Shashwat Kandadai</a> and UCSC</li>
                     </ul>
                     <p>Satellite descriptions and <a href='https://en.wikipedia.org/wiki/Ephemeris'>ephemeris</a> are sourced from <a href='https://www.space-track.org/'>Space-Tracker</a> a site maintained by the <a href='https://www.stratcom.mil/factsheets/7/JFCC_Space/'>Joint Functional Component Command for Space</a>. The <a href='https://github.com/shashwatak/satellite-js'>satellite-js</a> JavaScript library is used to convert the <a href='https://en.wikipedia.org/wiki/Two-line_element_set'>TLE</a> for each satellite into a geographic location.</p>
@@ -207,7 +206,7 @@
         </div>
     </div>
     <div id='top'>
-        <a id='logo-esri' href='http://www.esri.com' target='_blank'>
+        <a id='logo-esri' href='https://www.esri.com' target='_blank'>
             <img src='img/esri-small.png' height='50' />
         </a>
         <div id='heading'>Satellite Map</div>

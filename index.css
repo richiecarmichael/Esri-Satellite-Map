@@ -138,8 +138,7 @@ html, body {
     pointer-events: none;
 }
 
-#buttonCountry1 > button,
-#buttonCountry2 > button {
+.rc-country > button {
     width:40px;
 }
 

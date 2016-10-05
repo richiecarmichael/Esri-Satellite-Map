@@ -10,6 +10,7 @@ require([
     'esri/views/SceneView',
     'esri/geometry/Point',
     'esri/geometry/SpatialReference',
+    'dojo/number',
     'dojo/domReady!'
 ],
 function (
@@ -18,7 +19,8 @@ function (
     Scheduler,
     SceneView,
     Point,
-    SpatialReference
+    SpatialReference,
+    number
     ) {
     $(document).ready(function () {
         // Enforce strict mode
@@ -31,6 +33,10 @@ function (
             });
             return f;
         };
+
+        // Files
+        var TLE = 'data/tle.20160310.txt';
+        var OIO = 'data/oio.20160310.txt';
 
         // Well known satellite constellations.
         var GPS          = [20959, 22877, 23953, 24876, 25933, 26360, 26407, 26605, 26690, 27663, 27704, 28129, 28190, 28361, 28474, 28874, 29486, 29601, 32260, 32384, 32711, 35752, 36585, 37753, 38833, 39166, 39533, 39741, 40105, 40294, 40534];
@@ -196,7 +202,7 @@ function (
             $('#infoWindow-apogee').html(_selectedSatellite.metadata.apogee + ' km');
             $('#infoWindow-perigee').html(_selectedSatellite.metadata.perigee + ' km');
             $('#infoWindow-size').html(_selectedSatellite.metadata.size);
-            $('#infoWindow-launch').html(_selectedSatellite.metadata.launch);
+            $('#infoWindow-launch').html(_selectedSatellite.metadata.launch.toLocaleDateString());
             $('#link-nasa').attr('href', $.format(NASA_SATELLITE_DATABASE, [_selectedSatellite.metadata.int]));
             $('#link-n2yo').attr('href', $.format(N2YO_SATELLITE_DATABASE, [_selectedSatellite.id]));
 
@@ -241,18 +247,15 @@ function (
             resetUI();
             switch ($(this).attr('data-value')) {
                 case 'american-satellites':
-                    $('#buttonCountry1 > button, #buttonCountry2 > button').removeClass('active');
-                    $('#buttonCountry2 > button[data-value="US"]').addClass('active');
+                    $('.rc-country > button[data-value="US"]').addClass('active').siblings().removeClass('active');
                     selectSatellites();
                     break;
                 case 'chinese-satellites':
-                    $('#buttonCountry1 > button, #buttonCountry2 > button').removeClass('active');
-                    $('#buttonCountry1 > button[data-value="PRC"]').addClass('active');
+                    $('.rc-country > button[data-value="PRC"]').addClass('active').siblings().removeClass('active');
                     selectSatellites();
                     break;
                 case 'russian-satellites':
-                    $('#buttonCountry1 > button, #buttonCountry2 > button').removeClass('active');
-                    $('#buttonCountry2 > button[data-value="CIS"]').addClass('active');
+                    $('.rc-country > button[data-value="CIS"]').addClass('active').siblings().removeClass('active');
                     selectSatellites();
                     break;
                 case 'gps':
@@ -318,7 +321,7 @@ function (
                     ]);
                     selectSatellites();
                     break;
-                case 'reset-all':
+                case 'reset':
                     selectSatellites();
                     break;
             }
@@ -326,24 +329,25 @@ function (
             updateCounter();
         });
 
-        // Country
-        $('#buttonCountry1 > button').click(function () {
-            $(this).addClass('active').siblings('.active').removeClass('active');
-            $('#buttonCountry2 > button.active').removeClass('active');
+        // Reset UI
+        $('#buttonReset').click(function () {
+            resetUI();
             selectSatellites();
             updateBuffers();
             updateCounter();
         });
-        $('#buttonCountry2 > button').click(function () {
-            $(this).addClass('active').siblings('.active').removeClass('active');
-            $('#buttonCountry1 > button.active').removeClass('active');
+
+        // Country
+        $('.rc-country > button').click(function () {
+            $('.rc-country > button').removeClass('active');
+            $(this).addClass('active');
             selectSatellites();
             updateBuffers();
             updateCounter();
         });
 
         // Type or Size
-        $('#buttonType > button, #buttonSize > button').click(function () {
+        $('.rc-type > button, .rc-size > button').click(function () {
             $(this).addClass('active').siblings('.active').removeClass('active');
             selectSatellites();
             updateBuffers();
@@ -469,9 +473,9 @@ function (
        
         function selectSatellites() {
             // Country
-            var country = $('#buttonCountry1 > button.active, #buttonCountry2 > button.active').attr('data-value');
-            var junk = $('#buttonType > button.active').attr('data-value');
-            var size = $('#buttonSize > button.active').attr('data-value');
+            var country = $('.rc-country > button.active').attr('data-value');
+            var junk = $('.rc-type > button.active').attr('data-value');
+            var size = $('.rc-size > button.active').attr('data-value');
 
             var val1 = $('#slider-launchdate').slider('getValue');
             var val2 = $('#slider-period').slider('getValue');
@@ -533,8 +537,7 @@ function (
 
                 // Launch date
                 if (val1[0] !== min1 || val1[1] !== max1) {
-                    var d = new Date(this.metadata.launch);
-                    var y = d.getFullYear();
+                    var y = this.metadata.launch.getFullYear();
                     if (y <= val1[0] || y >= val1[1]) { return true; }
                 }
 
@@ -573,14 +576,20 @@ function (
             if (selected === 0) {
                 $('#satellite-count').html(
                     $.format('{0} satellites loaded', [
-                        d3_format.format(',d')(_satellites.length)
+                        number.format(_satellites.length, {
+                            places: 0
+                        })
                     ])
                 );
             } else {
                 $('#satellite-count').html(
                     $.format('{0} of {1} satellites found', [
-                        d3_format.format(',d')(selected),
-                        d3_format.format(',d')(_satellites.length)
+                        number.format(selected, {
+                            places: 0
+                        }),
+                        number.format(_satellites.length, {
+                            places: 0
+                        })
                     ])
                 );
             }
@@ -680,7 +689,7 @@ function (
 
         function loadSatellites() {
             var defer = new $.Deferred();
-            $.get('data/tle.txt', function (data) {
+            $.get(TLE, function (data) {
                 var lines = data.split('\n');
                 var count = (lines.length / 2).toFixed(0);
                 for (var i = 0; i < count; i++) {
@@ -714,7 +723,7 @@ function (
 
         function loadMetadata() {
             var defer = new $.Deferred();
-            $.get('data/oio.txt', function (data) {
+            $.get(OIO, function (data) {
                 var metadata = {};
                 var lines = data.split('\n');
                 $.each(lines, function () {
@@ -728,7 +737,7 @@ function (
                     var apogee = items[6];
                     var perigee = items[7];
                     var size = items[8];
-                    var launch = items[10];
+                    var launch = new Date(items[10]);
                     metadata[norad] = {
                         int: int,
                         name: name,
@@ -789,10 +798,9 @@ function (
         }
 
         function resetUI() {
-            $('#buttonCountry1 > button, #buttonCountry2 > button').removeClass('active');
-            $('#buttonCountry1 > button[data-value="none"]').addClass('active');
-            $('#buttonType > button[data-value="none"]').addClass('active').siblings().removeClass('active');
-            $('#buttonSize > button[data-value="none"]').addClass('active').siblings().removeClass('active');
+            $('.rc-country > button').removeClass('active').siblings('[data-value="none"]').addClass('active');
+            $('.rc-type > button').removeClass('active').siblings('[data-value="none"]').addClass('active');
+            $('.rc-size > button').removeClass('active').siblings('[data-value="none"]').addClass('active');
             resetSlider('#slider-launchdate');
             resetSlider('#slider-period');
             resetSlider('#slider-inclination');
