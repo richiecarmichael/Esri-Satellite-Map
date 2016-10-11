@@ -12,8 +12,6 @@ Click [here](http://richiecarmichael.github.io/sat/index.html) or [here](http://
   - A useful and comprehensive UI framework. This application leveraged a subset of bootstrap pertaining to buttons and input elements.
 * [Bootstrap Slider](https://github.com/seiyria/bootstrap-slider) by [Kyle J. Kemp](https://github.com/seiyria)
   - A bootstrap based slider.
-* [d3-format](https://github.com/d3/d3-format) by [Mike Bostock](http://bost.ocks.org/mike/)
-  - Format numbers for human consumption.
 * [Google Fonts](https://www.google.com/fonts), specifically [Orbitron](https://www.google.com/fonts/specimen/Orbitron) and [Oswald](https://www.google.com/fonts/specimen/Oswald)
   - "A web with web fonts is more beautiful, readable, accessible and open."
 * [jQuery](http://jquery.com/) by jQuery Foundataion Inc
