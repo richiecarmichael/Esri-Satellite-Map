@@ -1,5 +1,5 @@
 /*! =======================================================
-                      VERSION  4.8.3              
+                      VERSION  9.2.0              
 ========================================================= */
 /*! =========================================================
  * bootstrap-slider.js
@@ -52,15 +52,24 @@
 .slider.slider-horizontal .slider-tick,
 .slider.slider-horizontal .slider-handle {
   margin-left: -10px;
-  margin-top: -5px;
 }
 .slider.slider-horizontal .slider-tick.triangle,
 .slider.slider-horizontal .slider-handle.triangle {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
   border-width: 0 10px 10px 10px;
   width: 0;
   height: 0;
   border-bottom-color: #0480be;
   margin-top: 0;
+}
+.slider.slider-horizontal .slider-tick-container {
+  white-space: nowrap;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 .slider.slider-horizontal .slider-tick-label-container {
   white-space: nowrap;
@@ -78,8 +87,7 @@
 .slider.slider-vertical .slider-track {
   width: 10px;
   height: 100%;
-  margin-left: -5px;
-  left: 50%;
+  left: 25%;
   top: 0;
 }
 .slider.slider-vertical .slider-selection {
@@ -96,7 +104,6 @@
 }
 .slider.slider-vertical .slider-tick,
 .slider.slider-vertical .slider-handle {
-  margin-left: -5px;
   margin-top: -10px;
 }
 .slider.slider-vertical .slider-tick.triangle,
@@ -106,6 +113,12 @@
   height: 1px;
   border-left-color: #0480be;
   margin-left: 0;
+}
+.slider.slider-vertical .slider-tick-label-container {
+  white-space: nowrap;
+}
+.slider.slider-vertical .slider-tick-label-container .slider-tick-label {
+  padding-left: 4px;
 }
 .slider.slider-disabled .slider-handle {
   background-image: -webkit-linear-gradient(top, #dfdfdf 0%, #bebebe 100%);
@@ -130,6 +143,7 @@
 }
 .slider .tooltip-inner {
   white-space: nowrap;
+  max-width: none;
 }
 .slider .hide {
   display: none;
@@ -178,6 +192,7 @@
 }
 .slider-handle {
   position: absolute;
+  top: 0;
   width: 20px;
   height: 20px;
   background-color: #337ab7;

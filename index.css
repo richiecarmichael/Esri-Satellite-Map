@@ -151,8 +151,9 @@ html, body {
     margin-bottom: 10px;
 }
 
-#buttonCloseWindow {
-    margin-top: 20px;
+.rc-close {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .rc-vertical {

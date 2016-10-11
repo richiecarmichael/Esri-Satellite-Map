@@ -1,0 +1,356 @@
+﻿{
+  "countries": [
+    {
+      "code": "AB",
+      "country": "ARAB SATELLITE COMMUNICATIONS ORGANIZATION"
+    },
+    {
+      "code": "AC",
+      "country": "ASIASAT CORP"
+    },
+    {
+      "code": "ALG",
+      "country": "ALGERIA"
+    },
+    {
+      "code": "ALL",
+      "country": "ALL"
+    },
+    {
+      "code": "ARGN",
+      "country": "ARGENTINA"
+    },
+    {
+      "code": "ASRA",
+      "country": "AUSTRIA"
+    },
+    {
+      "code": "AUS",
+      "country": "AUSTRALIA"
+    },
+    {
+      "code": "AZER",
+      "country": "AZERBAIJAN"
+    },
+    {
+      "code": "BEL",
+      "country": "BELGIUM"
+    },
+    {
+      "code": "BELA",
+      "country": "BELARUS"
+    },
+    {
+      "code": "BERM",
+      "country": "BERMUDA"
+    },
+    {
+      "code": "BOL",
+      "country": "BOLIVIA"
+    },
+    {
+      "code": "BRAZ",
+      "country": "BRAZIL"
+    },
+    {
+      "code": "CA",
+      "country": "CANADA"
+    },
+    {
+      "code": "CHBZ",
+      "country": "PEOPLES REPUBLIC OF CHINA\/BRAZIL"
+    },
+    {
+      "code": "CHLE",
+      "country": "CHILE"
+    },
+    {
+      "code": "CIS",
+      "country": "COMMONWEALTH OF INDEPENDENT STATES"
+    },
+    {
+      "code": "COL",
+      "country": "COLOMBIA"
+    },
+    {
+      "code": "CZCH",
+      "country": "CZECHOSLOVAKIA"
+    },
+    {
+      "code": "DEN",
+      "country": "DENMARK"
+    },
+    {
+      "code": "ECU",
+      "country": "ECUADOR"
+    },
+    {
+      "code": "EGYP",
+      "country": "EGYPT"
+    },
+    {
+      "code": "ESA",
+      "country": "EUROPEAN SPACE AGENCY"
+    },
+    {
+      "code": "ESRO",
+      "country": "EUROPEAN SPACE RESEARCH ORGANIZATION"
+    },
+    {
+      "code": "EST",
+      "country": "ESTONIA"
+    },
+    {
+      "code": "EUME",
+      "country": "EUROPEAN ORGANIZATION FOR THE EXPLOITATION OF METEOROLOGICAL SATELLITES"
+    },
+    {
+      "code": "EUTE",
+      "country": "EUROPEAN TELECOMMUNICATIONS SATELLITE ORGANIZATION (EUTELSAT)"
+    },
+    {
+      "code": "FGER",
+      "country": "FRANCE\/GERMANY"
+    },
+    {
+      "code": "FR",
+      "country": "FRANCE"
+    },
+    {
+      "code": "FRIT",
+      "country": "FRANCE\/ITALY"
+    },
+    {
+      "code": "GER",
+      "country": "GERMANY"
+    },
+    {
+      "code": "GLOB",
+      "country": "GLOBALSTAR"
+    },
+    {
+      "code": "GREC",
+      "country": "GREECE"
+    },
+    {
+      "code": "HUN",
+      "country": "HUNGARY"
+    },
+    {
+      "code": "IM",
+      "country": "INTERNATIONAL MARITIME SATELLITE ORGANIZATION (INMARSAT)"
+    },
+    {
+      "code": "IND",
+      "country": "INDIA"
+    },
+    {
+      "code": "INDO",
+      "country": "INDONESIA"
+    },
+    {
+      "code": "IRAN",
+      "country": "IRAN"
+    },
+    {
+      "code": "IRAQ",
+      "country": "IRAQ"
+    },
+    {
+      "code": "ISRA",
+      "country": "ISRAEL"
+    },
+    {
+      "code": "ISS",
+      "country": "INTERNATIONAL SPACE STATION"
+    },
+    {
+      "code": "IT",
+      "country": "ITALY"
+    },
+    {
+      "code": "ITSO",
+      "country": "INTERNATIONAL TELECOMMUNICATIONS SATELLITE ORGANIZATION (INTELSAT)"
+    },
+    {
+      "code": "JPN",
+      "country": "JAPAN"
+    },
+    {
+      "code": "KAZ",
+      "country": "KAZAKHSTAN"
+    },
+    {
+      "code": "LAOS",
+      "country": "LAOS"
+    },
+    {
+      "code": "LTU",
+      "country": "LITHUANIA"
+    },
+    {
+      "code": "LUXE",
+      "country": "LUXEMBOURG"
+    },
+    {
+      "code": "MALA",
+      "country": "MALAYSIA"
+    },
+    {
+      "code": "MEX",
+      "country": "MEXICO"
+    },
+    {
+      "code": "NATO",
+      "country": "NORTH ATLANTIC TREATY ORGANIZATION"
+    },
+    {
+      "code": "NETH",
+      "country": "NETHERLANDS"
+    },
+    {
+      "code": "NICO",
+      "country": "NEW ICO"
+    },
+    {
+      "code": "NIG",
+      "country": "NIGERIA"
+    },
+    {
+      "code": "NKOR",
+      "country": "NORTH KOREA"
+    },
+    {
+      "code": "NOR",
+      "country": "NORWAY"
+    },
+    {
+      "code": "O3B",
+      "country": "O3B NETWORKS"
+    },
+    {
+      "code": "ORB",
+      "country": "ORBITAL TELECOMMUNICATIONS SATELLITE (GLOBALSTAR)"
+    },
+    {
+      "code": "PAKI",
+      "country": "PAKISTAN"
+    },
+    {
+      "code": "PER",
+      "country": "PERU"
+    },
+    {
+      "code": "POL",
+      "country": "POLAND"
+    },
+    {
+      "code": "POR",
+      "country": "PORTUGAL"
+    },
+    {
+      "code": "PRC",
+      "country": "PEOPLES REPUBLIC OF CHINA"
+    },
+    {
+      "code": "RASC",
+      "country": "REGIONAL AFRICAN SATELLITE COMMUNICATIONS ORG"
+    },
+    {
+      "code": "ROC",
+      "country": "REPUBLIC OF CHINA (TAIWAN)"
+    },
+    {
+      "code": "ROM",
+      "country": "ROMANIA"
+    },
+    {
+      "code": "RP",
+      "country": "REPUBLIC OF PHILIPPINES"
+    },
+    {
+      "code": "SAFR",
+      "country": "SOUTH AFRICA"
+    },
+    {
+      "code": "SAUD",
+      "country": "SAUDI ARABIA"
+    },
+    {
+      "code": "SEAL",
+      "country": "SEA LAUNCH DEMO"
+    },
+    {
+      "code": "SES",
+      "country": "SOCI\u00c9T\u00c9 EUROP\u00c9ENNE DES SATELLITES"
+    },
+    {
+      "code": "SING",
+      "country": "SINGAPORE"
+    },
+    {
+      "code": "SKOR",
+      "country": "SOUTH KOREA"
+    },
+    {
+      "code": "SPN",
+      "country": "SPAIN"
+    },
+    {
+      "code": "STCT",
+      "country": "SINGAPORE\/TAIWAN"
+    },
+    {
+      "code": "SWED",
+      "country": "SWEDEN"
+    },
+    {
+      "code": "SWTZ",
+      "country": "SWITZERLAND"
+    },
+    {
+      "code": "THAI",
+      "country": "THAILAND"
+    },
+    {
+      "code": "TMMC",
+      "country": "TURKMENISTAN\/MONACO"
+    },
+    {
+      "code": "TURK",
+      "country": "TURKEY"
+    },
+    {
+      "code": "UAE",
+      "country": "UNITED ARAB EMIRATES"
+    },
+    {
+      "code": "UK",
+      "country": "UNITED KINGDOM"
+    },
+    {
+      "code": "UKR",
+      "country": "UKRAINE"
+    },
+    {
+      "code": "URY",
+      "country": "URUGUAY"
+    },
+    {
+      "code": "US",
+      "country": "UNITED STATES OF AMERICA"
+    },
+    {
+      "code": "USBZ",
+      "country": "UNITED STATES\/BRAZIL"
+    },
+    {
+      "code": "VENZ",
+      "country": "VENEZUELA"
+    },
+    {
+      "code": "VTNM",
+      "country": "VIETNAM"
+    }
+  ]
+}

@@ -26,17 +26,18 @@
     <link type='image/ico' rel='icon' href='img/favicon.ico' />
 
     <link type='text/css' rel='stylesheet' href='//fonts.googleapis.com/css?family=Orbitron:400,700|Oswald'>
-    <link type='text/css' rel='stylesheet' href='//js.arcgis.com/4.0beta1/esri/css/esri.css'>
+    <link type='text/css' rel='stylesheet' href='//js.arcgis.com/4.1/esri/css/main.css'>
     <link type='text/css' rel='stylesheet' href='css/bootstrap.min.css'>
     <link type='text/css' rel='stylesheet' href='css/bootstrap-theme.min.css'>
     <link type='text/css' rel='stylesheet' href='css/bootstrap-slider.min.css'>
     <link type='text/css' rel='stylesheet' href='index.css' />
 
-    <script type='text/javascript' src='js/jquery-2.1.4.min.js'></script>
+    <script type='text/javascript' src='js/jquery-3.1.1.min.js'></script>
     <script type='text/javascript' src='js/bootstrap.min.js'></script>
     <script type='text/javascript' src='js/bootstrap-slider.min.js'></script>
-    <script type='text/javascript' src='js/satellite.min.js'></script>
-    <script type='text/javascript' src='//js.arcgis.com/4.0beta1'></script>
+    <script type='text/javascript' src='js/satellite.js'></script>
+    <script type='text/javascript' src='js/three.min.js'></script>
+    <script type='text/javascript' src='//js.arcgis.com/4.1/'></script>
     <script type='text/javascript' src='index.js'></script>
     <script>
         (function (i, s, o, g, r, a, m) {
@@ -64,6 +65,7 @@
                             <li><a href='#' data-value='chinese-satellites'>Chinese Satellites</a></li>
                             <li><a href='#' data-value='russian-satellites'>Russian Satellites</a></li>
                             <li class='divider'></li>
+                            <li><a href='#' data-value='space-stations'>Space Stations</a></li>
                             <li><a href='#' data-value='gps'>GPS</a></li>
                             <li><a href='#' data-value='glonass'>GLONASS</a></li>
                             <li><a href='#' data-value='inmarsat'>Inmarsat</a></li>
@@ -88,10 +90,10 @@
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='FR' title='France and Italy'>FR</button>
                 </div>
                 <div class='btn-group btn-group-sm rc-country' role='group'>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='IND' title='India'>IN</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='JPN' title='Japan'>JP</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='KAZ' title='Kazakhstan'>KZ</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='MALA' title='Malaysia'>MY</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='CIS' title='Russia'>RU</button>
+                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='UK' title='United Kingdom'>UK</button>
                     <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='US' title='United States of America'>US</button>
                 </div>
                 <div class='rc-heading'>Type</div>
@@ -158,16 +160,10 @@
                         <td class='rc-table-value' id='infoWindow-launch'></td>
                     </tr>
                 </table>
-                <div class='rc-heading'>Trajectory</div>
-                <div id='buttonTrajectory' class='btn-group btn-group-sm' role='group'>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='3600000' title='Small radar cross-section'>1 hour</button>
-                    <button type='button' class='btn btn-default active' data-toggle='tooltip' data-placement='top' data-value='86400000' title='Medium radar cross-section'>1 day</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='604800000' title='Large radar cross-section'>1 week</button>
-                </div>
                 <div class='rc-heading'>Links</div>
                 <a id='link-nasa' href='#' class='rc-vertical'>NASA</a>
                 <a id='link-n2yo' href='#' class='rc-vertical'>N2YO</a>
-                <button id='buttonCloseWindow' type='button' class='btn btn-default'>Back</button>
+                <button type='button' class='btn btn-default rc-close'>Back</button>
             </div>
             <div id='bottom-left-help' class='rc-panel' data-panel='help'>
                 <div class='rc-title'>HELP</div>
@@ -179,9 +175,10 @@
                     <p>To clear the selection, click Presets &gt; Reset All.</p>
                     <p>Clicking on an individual satellite in the 3d view will display a panel with detailed information. Links to NASA's website are provided for additional information. In addition to displaying name and orbital details, the 3d view displays the satellite's future trajectory with respect to the Earth's surface. By default the trajectory is for one day but this can be changed to either one hour or one week.</p>
                     <p>Perhaps the most surprising fact for users of this application is the large proportion of orbital objects classified as <i>junk</i>. Approximately 3/4 of manmade objects are spent rocket boosters or debris from satellite collisions.</p>
-                    <p>It is important to note that satellite positions are derived from an ephemeris database downloaded in May, 2015. As such this app will not display satellites launched since then or reflect intentionally or unintentionally orbital adjustments. Similarly atmospheric friction and gravitational forces are likely to influence orbital position. However the different between projected and actual position is unlikely to be perceptible at the scale used.</</p>
+                    <p>It is important to note that satellite positions are derived from an ephemeris database downloaded in May, 2015. As such this app will not display satellites launched since then or reflect intentionally or unintentionally orbital adjustments. Similarly atmospheric friction and gravitational forces are likely to influence orbital position. However the different between projected and actual position is unlikely to be perceptible at the scale used.</p>
                     <p>If you encounter any problems or have suggestions for improvements please don't hesiste to let us know <a href='https://github.com/richiecarmichael/Esri-Satellite-Map/issues'>here</a>.</p>
                 </div>
+                <button type='button' class='btn btn-default rc-close'>Back</button>
             </div>
             <div id='bottom-left-about' class='rc-panel' data-panel='about'>
                 <div class='rc-title'>ABOUT</div>
@@ -198,6 +195,7 @@
                     <p>Satellite descriptions and <a href='https://en.wikipedia.org/wiki/Ephemeris'>ephemeris</a> are sourced from <a href='https://www.space-track.org/'>Space-Tracker</a> a site maintained by the <a href='https://www.stratcom.mil/factsheets/7/JFCC_Space/'>Joint Functional Component Command for Space</a>. The <a href='https://github.com/shashwatak/satellite-js'>satellite-js</a> JavaScript library is used to convert the <a href='https://en.wikipedia.org/wiki/Two-line_element_set'>TLE</a> for each satellite into a geographic location.</p>
                     <p>Souce code for this application can be found <a href='https://github.com/richiecarmichael/Esri-Satellite-Map'>here</a>.</p>
                 </div>
+                <button type='button' class='btn btn-default rc-close'>Back</button>
             </div>
         </div>
         <div id='bottom-right'>

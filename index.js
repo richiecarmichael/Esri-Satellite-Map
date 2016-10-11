@@ -3,23 +3,26 @@
    (c) 2015 Esri | http://www.esri.com/legal/software-license  
 ----------------------------------------------------------------------------------- */
 
-require([
+require({
+    packages: [{
+        name: 'rc',
+        location: document.location.pathname + '/..'
+    }]
+}, [
     'esri/Map',
     'esri/Camera',
-    'esri/core/Scheduler',
     'esri/views/SceneView',
-    'esri/geometry/Point',
-    'esri/geometry/SpatialReference',
+    'esri/views/3d/externalRenderers',
+    'rc/satelliteRenderer',
     'dojo/number',
     'dojo/domReady!'
 ],
 function (
     Map,
     Camera,
-    Scheduler,
     SceneView,
-    Point,
-    SpatialReference,
+    ExternalRenderers,
+    SatelliteRenderer,
     number
     ) {
     $(document).ready(function () {
@@ -39,38 +42,32 @@ function (
         var OIO = 'data/oio.20160310.txt';
 
         // Well known satellite constellations.
-        var GPS          = [20959, 22877, 23953, 24876, 25933, 26360, 26407, 26605, 26690, 27663, 27704, 28129, 28190, 28361, 28474, 28874, 29486, 29601, 32260, 32384, 32711, 35752, 36585, 37753, 38833, 39166, 39533, 39741, 40105, 40294, 40534];
-        var GLONASS      = [28915, 29672, 29670, 29671, 32276, 32275, 32393, 32395, 36111, 36112, 36113, 36400, 36402, 36401, 37139, 37138, 37137, 37829, 37869, 37867, 37868, 39155, 39620, 40001];
-        var INMARSAT     = [20918, 21149, 21814, 21940, 23839, 24307, 24674, 24819, 25153, 28628, 28899, 33278, 40384, 39476];
-        var LANDSAT      = [25682, 39084];
-        var DIGITALGLOBE = [25919, 32060, 33331, 35946, 40115];
+        var GPS           = [20959, 22877, 23953, 24876, 25933, 26360, 26407, 26605, 26690, 27663, 27704, 28129, 28190, 28361, 28474, 28874, 29486, 29601, 32260, 32384, 32711, 35752, 36585, 37753, 38833, 39166, 39533, 39741, 40105, 40294, 40534];
+        var GLONASS       = [28915, 29672, 29670, 29671, 32276, 32275, 32393, 32395, 36111, 36112, 36113, 36400, 36402, 36401, 37139, 37138, 37137, 37829, 37869, 37867, 37868, 39155, 39620, 40001];
+        var INMARSAT      = [20918, 21149, 21814, 21940, 23839, 24307, 24674, 24819, 25153, 28628, 28899, 33278, 40384, 39476];
+        var LANDSAT       = [25682, 39084];
+        var DIGITALGLOBE  = [25919, 32060, 33331, 35946, 40115];
+        var SPACESTATIONS = [
+            25544, // International Space Station
+            41765  // Tiangong-2
+        ];
 
-        // Orbital altitude definitions
+        // Orbital altitude definitions.
         var LOW_ORBIT = 2000;
         var GEOSYNCHRONOUS_ORBIT = 35786;
-        var TRAJECTORY_SEGMENTS = 1000;
 
-        // Satellite database urls
+        // Satellite database urls.
         var NASA_SATELLITE_DATABASE = 'http://nssdc.gsfc.nasa.gov/nmc/masterCatalog.do?sc={0}'; // use International id
         var N2YO_SATELLITE_DATABASE = 'http://www.n2yo.com/satellite/?s={0}';                   // use NORAD id
 
-        // Rendering variables
-        var _gl = null;
-        var _camera = null;
-        var _shader = null;
-        var _positionBuffer = null;
-        var _colorBuffer = null;
-        var _sizeBuffer = null;
-        var _positionLineBuffer = null;
-        var _colorLineBuffer = null;
-        var _sizeLineBuffer = null;       
-        var _selectedSatellite = null;
-
-        // The array of all upload satellites
-        var _satellites = [];
+        // Rendering variables.
+        var _satelliteRenderer = null;
 
         // Create map and view
         var _view = new SceneView({
+            map: new Map({
+                basemap: 'satellite'
+            }),
             container: 'map',
             ui: {
                 components: [
@@ -78,9 +75,18 @@ function (
                     'compass'
                 ]
             },
-            map: new Map({
-                basemap: 'satellite'
-            }),
+            environment: {
+                lighting: {
+                    directShadowsEnabled: false,
+                    ambientOcclusionEnabled: false,
+                    cameraTrackingEnabled: false
+                },
+                atmosphereEnabled: true,
+                atmosphere: {
+                    quality: 'high'
+                },
+                starsEnabled: false
+            },
             constraints: {
                 altitude: {
                     max: 12000000000
@@ -98,131 +104,84 @@ function (
                         'latestWkid': 3857
                     },
                     'z': 110000000
-                },
-                'heading': 0,
-                'tilt': 0,
-                'fov': 55
+                }
             }));
 
             // Increase far clipping plane
-            _view.constraints.clipDistance.far *= 2;
-
-            // Disable idle frame refreshes
-            _view._stage.setRenderParams({
-                idleSuspend: false
-            });
-
-            // Get webgl context and create shader
-            _gl = _view.canvas.getContext('experimental-webgl');
-
-            // Get a refernce to the Esri camera
-            _camera = _view._stage.getCamera();
-
-            // Load shaders
-            loadShaders();
+            _view.constraints.clipDistance.far *= 4;
 
             // Load satellites
-            loadSatellites().done(function () {
-                //initBuffer();
-                updateBuffers();
+            loadSatellites().done(function (satellites) {
+                // Load satellite layer
+                _satelliteRenderer = new SatelliteRenderer(satellites);
+                ExternalRenderers.add(
+                    _view,
+                    _satelliteRenderer
+                );
+
+                // Show satellite count
+                updateCounter();
+
+                // Load metadata
                 loadMetadata().done(function (metadata) {
-                    $.each(_satellites, function () {
+                    $.each(_satelliteRenderer.satellites, function () {
                         this.metadata = metadata[this.id];
                     });
-                    updateCounter();
-                });
-
-                // Add custom renderer
-                Scheduler.addFrameTask({
-                    postRender: postRender
                 });
             });
         });
         _view.on('click', function (e) {
-            // Exit if invalid or missing map point
-            if (!e || !e.screenPoint) { return; }
+            // Highlighted satellite
+            var sat = _satelliteRenderer.satelliteHover;
 
-            // Find satellites close to screen coordinates
-            var locations = [];
-            var camera = _view._stage.getCamera();
-            $.each(_satellites, function () {
-                var screenPoint = [0, 0, 0];
-                camera.projectPoint(this.world, screenPoint);
-                var x = screenPoint[0];
-                var y = screenPoint[1];
-
-                // 
-                var pythagoras = Math.sqrt(
-                    Math.pow(e.screenPoint.x - x, 2) +
-                    Math.pow(e.screenPoint.y - y, 2)
-                );
-                if (pythagoras <= 5) {
-                    locations.push(this);
-                }
-                this.highlighted = false;
-            });
-            if (locations.length === 0) {
-                _selectedSatellite = null;
-                hideTrajectory();
+            // Nothing selected. Hide orbit and close information window.
+            if (sat === null) {
+                _satelliteRenderer.hideOrbit();
                 showDialog('main');
-                updateBuffers();
                 return;
             }
-            var location = null;
-            if (locations.length === 1) {
-                _selectedSatellite = null;
-                hideTrajectory();
-                location = locations[0];
-            } else {
-                var point = _view.get('camera').position;
-                var result = new Float32Array(3);
-                _view.coordinateSystemHelper.pointToEnginePosition(point, result);
-                $.each(locations, function () {
-                    this.distanceToCamera = Math.sqrt(
-                        Math.pow(this.world[0] - result[0], 2) +
-                        Math.pow(this.world[1] - result[1], 2) +
-                        Math.pow(this.world[2] - result[2], 2)
-                    );
-                });
-                locations.sort(function (a, b) {
-                    return a.distanceToCamera - b.distanceToCamera;
-                });
-                location = locations[0];
-            }
-            location.highlighted = true;
-            _selectedSatellite = location;
 
-            $('#infoWindow-title').html(_selectedSatellite.metadata.name);
-            $('#infoWindow-norad').html(_selectedSatellite.id);
-            $('#infoWindow-int').html(_selectedSatellite.metadata.int);
-            $('#infoWindow-name').html(_selectedSatellite.metadata.name);
-            $('#infoWindow-country').html(_selectedSatellite.metadata.country);
-            $('#infoWindow-period').html(_selectedSatellite.metadata.period + ' min');
-            $('#infoWindow-inclination').html(_selectedSatellite.metadata.inclination + '°');
-            $('#infoWindow-apogee').html(_selectedSatellite.metadata.apogee + ' km');
-            $('#infoWindow-perigee').html(_selectedSatellite.metadata.perigee + ' km');
-            $('#infoWindow-size').html(_selectedSatellite.metadata.size);
-            $('#infoWindow-launch').html(_selectedSatellite.metadata.launch.toLocaleDateString());
-            $('#link-nasa').attr('href', $.format(NASA_SATELLITE_DATABASE, [_selectedSatellite.metadata.int]));
-            $('#link-n2yo').attr('href', $.format(N2YO_SATELLITE_DATABASE, [_selectedSatellite.id]));
-
+            // Display information panel
+            $('#infoWindow-title').html(sat.metadata.name);
+            $('#infoWindow-norad').html(sat.id);
+            $('#infoWindow-int').html(sat.metadata.int);
+            $('#infoWindow-name').html(sat.metadata.name);
+            $('#infoWindow-country').html(sat.metadata.country);
+            $('#infoWindow-period').html(number.format(sat.metadata.period, {
+                places: 2
+            }) + ' min');
+            $('#infoWindow-inclination').html(sat.metadata.inclination + '°');
+            $('#infoWindow-apogee').html(number.format(sat.metadata.apogee, {
+                places: 0
+            }) + ' km');
+            $('#infoWindow-perigee').html(number.format(sat.metadata.perigee, {
+                places: 0
+            }) + ' km');
+            $('#infoWindow-size').html(sat.metadata.size);
+            $('#infoWindow-launch').html(sat.metadata.launch.toLocaleDateString());
+            $('#link-nasa').attr('href', $.format(NASA_SATELLITE_DATABASE, [sat.metadata.int]));
+            $('#link-n2yo').attr('href', $.format(N2YO_SATELLITE_DATABASE, [sat.id]));
             showDialog('info');
-            showTrajectory();
-            updateBuffers();
+
+            // Display the orbit for the click satellite
+            _satelliteRenderer.showOrbit();
+        });
+
+        $('#map').mousemove(function (e) {
+            if (!_satelliteRenderer) { return; }
+            _satelliteRenderer.mousemove(e.offsetX, e.offsetY);
         });
 
         $('#bottom-left-help a').attr('target', '_blank');
         $('#bottom-left-about a').attr('target', '_blank');
         $('#link-nasa, #link-n2yo').attr('target', '_blank');
 
-        $('#buttonCloseWindow').click(function () {
-            $.each(_satellites, function () {
+        $('.rc-close').click(function () {
+            $.each(_satelliteRenderer.satellites, function () {
                 this.highlighted = false;
             });
-            _selectedSatellite = null;
-            hideTrajectory();
+            _satelliteRenderer.hideOrbit();
             showDialog('main');
-            updateBuffers();
         });
 
         $('#button-help').click(function () {
@@ -231,12 +190,6 @@ function (
 
         $('#button-about').click(function () {
             showDialog('about');
-        });
-
-        $('#buttonTrajectory > button').click(function () {
-            $(this).addClass('active').siblings('.active').removeClass('active');
-            $('#buttonCountry2 > button.active').removeClass('active');
-            showTrajectory();
         });
         
         // Enable bootstrap tooltips
@@ -258,28 +211,33 @@ function (
                     $('.rc-country > button[data-value="CIS"]').addClass('active').siblings().removeClass('active');
                     selectSatellites();
                     break;
+                case 'space-stations':
+                    $.each(_satelliteRenderer.satellites, function () {
+                        this.selected = SPACESTATIONS.indexOf(this.id) !== -1;
+                    });
+                    break;
                 case 'gps':
-                    $.each(_satellites, function () {
+                    $.each(_satelliteRenderer.satellites, function () {
                         this.selected = GPS.indexOf(this.id) !== -1;
                     });
                     break;
                 case 'glonass':
-                    $.each(_satellites, function () {
+                    $.each(_satelliteRenderer.satellites, function () {
                         this.selected = GLONASS.indexOf(this.id) !== -1;
                     });
                     break;
                 case 'inmarsat':
-                    $.each(_satellites, function () {
+                    $.each(_satelliteRenderer.satellites, function () {
                         this.selected = INMARSAT.indexOf(this.id) !== -1;
                     });
                     break;
                 case 'landsat':
-                    $.each(_satellites, function () {
+                    $.each(_satelliteRenderer.satellites, function () {
                         this.selected = LANDSAT.indexOf(this.id) !== -1;
                     });
                     break;
                 case 'digitalglobe':
-                    $.each(_satellites, function () {
+                    $.each(_satelliteRenderer.satellites, function () {
                         this.selected = DIGITALGLOBE.indexOf(this.id) !== -1;
                     });
                     break;
@@ -325,16 +283,16 @@ function (
                     selectSatellites();
                     break;
             }
-            updateBuffers();
             updateCounter();
+            _satelliteRenderer.updateSelection();
         });
 
         // Reset UI
         $('#buttonReset').click(function () {
             resetUI();
             selectSatellites();
-            updateBuffers();
             updateCounter();
+            _satelliteRenderer.updateSelection();
         });
 
         // Country
@@ -342,16 +300,16 @@ function (
             $('.rc-country > button').removeClass('active');
             $(this).addClass('active');
             selectSatellites();
-            updateBuffers();
             updateCounter();
+            _satelliteRenderer.updateSelection();
         });
 
         // Type or Size
         $('.rc-type > button, .rc-size > button').click(function () {
             $(this).addClass('active').siblings('.active').removeClass('active');
             selectSatellites();
-            updateBuffers();
             updateCounter();
+            _satelliteRenderer.updateSelection();
         });
 
         // Initialize sliders
@@ -363,8 +321,8 @@ function (
             value: [1950, 2020]
         }).slider().on('slideStop', function () {
             selectSatellites();
-            updateBuffers();
             updateCounter();
+            _satelliteRenderer.updateSelection();
         });
         $('#slider-period').slider({
             id: 'slider-period-internal',
@@ -375,8 +333,8 @@ function (
             value: [0, 60000]
         }).slider().on('slideStop', function () {
             selectSatellites();
-            updateBuffers();
             updateCounter();
+            _satelliteRenderer.updateSelection();
         });
         $('#slider-inclination').slider({
             id: 'slider-inclination-internal',
@@ -387,8 +345,8 @@ function (
             value: [0, 150]
         }).slider().on('slideStop', function () {
             selectSatellites();
-            updateBuffers();
             updateCounter();
+            _satelliteRenderer.updateSelection();
         });
         $('#slider-apogee').slider({
             id: 'slider-apogee-internal',
@@ -399,8 +357,8 @@ function (
             value: [0, 600000]
         }).slider().on('slideStop', function () {
             selectSatellites();
-            updateBuffers();
             updateCounter();
+            _satelliteRenderer.updateSelection();
         });
         $('#slider-perigee').slider({
             id: 'slider-perigee-internal',
@@ -411,8 +369,8 @@ function (
             value: [0, 500000]
         }).slider().on('slideStop', function () {
             selectSatellites();
-            updateBuffers();
             updateCounter();
+            _satelliteRenderer.updateSelection();
         });
         
         function showDialog(name) {
@@ -430,47 +388,6 @@ function (
             });
         }
 
-        function showTrajectory() {
-            var position = [];
-            var color = [];
-            var size = [];
-
-            var length = Number($('#buttonTrajectory > button.active').attr('data-value'));
-
-            for (var i = 0; i < TRAJECTORY_SEGMENTS; i++) {
-                var world = new Float32Array(3);
-                var point = getSatelliteLocation(
-                    new Date(_selectedSatellite.time + i * length / TRAJECTORY_SEGMENTS),
-                    _selectedSatellite.line1,
-                    _selectedSatellite.line2
-                );
-                _view.coordinateSystemHelper.pointToEnginePosition(point, world);
-                position.push(world[0], world[1], world[2]);
-                color.push(1.0, 1.0, 1.0, 1.0);
-                size.push(1.0);
-            }
-
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, _positionLineBuffer);
-            _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array(position), _gl.STATIC_DRAW);
-
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, _colorLineBuffer);
-            _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array(color), _gl.STATIC_DRAW);
-
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, _sizeLineBuffer);
-            _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array(size), _gl.STATIC_DRAW);
-        }
-
-        function hideTrajectory() {
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, _positionLineBuffer);
-            _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array([]), _gl.STATIC_DRAW);
-
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, _colorLineBuffer);
-            _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array([]), _gl.STATIC_DRAW);
-
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, _sizeLineBuffer);
-            _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array([]), _gl.STATIC_DRAW);
-        }
-       
         function selectSatellites() {
             // Country
             var country = $('.rc-country > button.active').attr('data-value');
@@ -504,14 +421,14 @@ function (
                 (val3[0] === min3 && val3[1] === max3) &&
                 (val4[0] === min4 && val4[1] === max4) &&
                 (val5[0] === min5 && val5[1] === max5)) {
-                $.each(_satellites, function () {
+                $.each(_satelliteRenderer.satellites, function () {
                     this.selected = false;
                 });
                 return;
             }
 
             //
-            $.each(_satellites, function () {
+            $.each(_satelliteRenderer.satellites, function () {
                 // Reset selection
                 this.selected = false;
 
@@ -568,7 +485,7 @@ function (
 
         function updateCounter() {
             var selected = 0;
-            $.each(_satellites, function () {
+            $.each(_satelliteRenderer.satellites, function () {
                 if (this.selected) {
                     selected++;
                 }
@@ -576,7 +493,7 @@ function (
             if (selected === 0) {
                 $('#satellite-count').html(
                     $.format('{0} satellites loaded', [
-                        number.format(_satellites.length, {
+                        number.format(_satelliteRenderer.satellites.length, {
                             places: 0
                         })
                     ])
@@ -587,7 +504,7 @@ function (
                         number.format(selected, {
                             places: 0
                         }),
-                        number.format(_satellites.length, {
+                        number.format(_satelliteRenderer.satellites.length, {
                             places: 0
                         })
                     ])
@@ -595,128 +512,32 @@ function (
             }
         }
 
-        function loadShaders() {
-            // Compile fragment and vertex shaders
-            var v = 'uniform mat4 uPMatrix;' +
-                    'uniform mat4 uVMatrix;' +
-                    'attribute vec3 aPosition;' +
-                    'attribute vec4 aColor;' +
-                    'attribute float aSize;' +
-                    'varying vec4 vColor;' +
-                    'void main(void) {' +
-                        'gl_Position = uPMatrix * uVMatrix * vec4(aPosition, 1.0);' +
-                        'gl_PointSize = aSize;' +
-                        'vColor = aColor;' +
-                    '}';
-            var f = 'precision mediump float;' +
-                    'varying vec4 vColor;' +
-                    'void main(void) {' +
-                        'gl_FragColor = vColor;' +
-                    '}';
-            var vshader = _gl.createShader(_gl.VERTEX_SHADER);
-            var fshader = _gl.createShader(_gl.FRAGMENT_SHADER);
-            _gl.shaderSource(vshader, v);
-            _gl.shaderSource(fshader, f);
-            _gl.compileShader(vshader);
-            _gl.compileShader(fshader);
-
-            // Create and attach shaders
-            _shader = _gl.createProgram();
-            _gl.attachShader(_shader, vshader);
-            _gl.attachShader(_shader, fshader);
-            
-            // Compile and load shader
-            _gl.linkProgram(_shader);
-            if (!_gl.getProgramParameter(_shader, _gl.LINK_STATUS)) {
-                alert('Could not initialise shaders');
-            }
-            _gl.useProgram(_shader);
-
-            // Define variables in the vertex shader
-            _shader.pMatrixUniform = _gl.getUniformLocation(_shader, 'uPMatrix');
-            _shader.vMatrixUniform = _gl.getUniformLocation(_shader, 'uVMatrix');
-
-            // Assign position vertex buffer
-            _shader.position = _gl.getAttribLocation(_shader, 'aPosition');
-            _gl.enableVertexAttribArray(_shader.position);
-
-            // Assign color vertex buffer
-            _shader.color = _gl.getAttribLocation(_shader, 'aColor');
-            _gl.enableVertexAttribArray(_shader.color);
-
-            // Assign size vertex buffer
-            _shader.size = _gl.getAttribLocation(_shader, 'aSize');
-            _gl.enableVertexAttribArray(_shader.size);
-
-            // Create satellite buffer
-            _positionBuffer = _gl.createBuffer();
-            _colorBuffer = _gl.createBuffer();
-            _sizeBuffer = _gl.createBuffer();
-
-            // Create trajectory buffer
-            _positionLineBuffer = _gl.createBuffer();
-            _colorLineBuffer = _gl.createBuffer();
-            _sizeLineBuffer = _gl.createBuffer();
-        }
-
-        function updateBuffers() {
-            var position = [];
-            var color = [];
-            var size = [];
-            $.each(_satellites, function () {
-                position.push(this.world[0], this.world[1], this.world[2]);
-                if (this.highlighted) {
-                    color.push(0.0, 1.0, 1.0, 1.0);
-                    size.push(4.0);
-                } else if (this.selected) {
-                    color.push(1.0, 0.0, 0.0, 1.0);
-                    size.push(3.0);
-                } else {
-                    color.push(1.0, 1.0, 1.0, 1.0);
-                    size.push(1.0);
-                }
-            });
-
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, _positionBuffer);
-            _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array(position), _gl.STATIC_DRAW);
-
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, _colorBuffer);
-            _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array(color), _gl.STATIC_DRAW);
-
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, _sizeBuffer);
-            _gl.bufferData(_gl.ARRAY_BUFFER, new Float32Array(size), _gl.STATIC_DRAW);
-        }
-
         function loadSatellites() {
             var defer = new $.Deferred();
             $.get(TLE, function (data) {
                 var lines = data.split('\n');
                 var count = (lines.length / 2).toFixed(0);
+                var satellites = [];
                 for (var i = 0; i < count; i++) {
                     var line1 = lines[i * 2 + 0];
                     var line2 = lines[i * 2 + 1];
-                    var point = null;
-                    var time = Date.now();
+                    var satrec = null;
                     try {
-                        point = getSatelliteLocation(new Date(time), line1, line2);
+                        satrec = satellite.twoline2satrec(line1, line2);
                     }
-                    catch (err) { }
-                    if (point !== null) {
-                        var result = new Float32Array(3);
-                        _view.coordinateSystemHelper.pointToEnginePosition(point, result);
-                        _satellites.push({
-                            world: result,
-                            id: Number(line1.substring(2, 7)),
-                            line1: line1,
-                            line2: line2,
-                            time: time,
-                            selected: false,
-                            highlighted: false,
-                            metadata: null
-                        });
+                    catch (err) {
+                        continue;
                     }
+                    if (satrec === null || satrec === undefined) { continue;}
+                    satellites.push({
+                        id: Number(line1.substring(2, 7)),
+                        satrec: satrec,
+                        selected: false,
+                        highlighted: false,
+                        metadata: null
+                    });
                 }
-                defer.resolve();
+                defer.resolve(satellites);
             });
             return defer.promise();
         }
@@ -755,48 +576,6 @@ function (
             return defer.promise();
         }
 
-        function getSatelliteLocation(date, line1, line2) {
-            var satrec = satellite.twoline2satrec(line1, line2);
-            var position_and_velocity = satellite.propagate(
-                satrec,
-                date.getUTCFullYear(),
-                date.getUTCMonth() + 1,
-                date.getUTCDate(),
-                date.getUTCHours(),
-                date.getUTCMinutes(),
-                date.getUTCSeconds()
-            );
-            var position_eci = position_and_velocity.position;
-            var gmst = satellite.gstime_from_date(
-                date.getUTCFullYear(),
-                date.getUTCMonth() + 1,
-                date.getUTCDate(),
-                date.getUTCHours(),
-                date.getUTCMinutes(),
-                date.getUTCSeconds()
-            );
-            var position_gd = satellite.eci_to_geodetic(position_eci, gmst);
-            var longitude = position_gd.longitude;
-            var latitude = position_gd.latitude;
-            var height = position_gd.height;
-            if (isNaN(longitude) || isNaN(latitude) || isNaN(height)) {
-                return null;
-            }
-            var rad2deg = 180 / Math.PI;
-            while (longitude < -Math.PI) {
-                longitude += 2 * Math.PI;
-            }
-            while (longitude > Math.PI) {
-                longitude -= 2 * Math.PI;
-            }
-            return new Point(
-                rad2deg * longitude,
-                rad2deg * latitude,
-                height * 1000,
-                new SpatialReference(4326)
-            );
-        }
-
         function resetUI() {
             $('.rc-country > button').removeClass('active').siblings('[data-value="none"]').addClass('active');
             $('.rc-type > button').removeClass('active').siblings('[data-value="none"]').addClass('active');
@@ -813,45 +592,6 @@ function (
                 $(name).slider('getAttribute', 'min'),
                 $(name).slider('getAttribute', 'max')
             ]);
-        }
-
-        function postRender() {
-            // Exit if no webgl context
-            if (_gl === null) { return; }
-            if (_positionBuffer === null) { return; }
-
-            // Reassign shader program
-            _gl.useProgram(_shader);
-
-            // Assign projection and view matrices
-            _gl.uniformMatrix4fv(_shader.pMatrixUniform, false, _camera.projectionMatrix);
-            _gl.uniformMatrix4fv(_shader.vMatrixUniform, false, _camera.viewMatrix);
-
-            // Enable vertex arrays
-            _gl.enableVertexAttribArray(_shader.position);
-            _gl.enableVertexAttribArray(_shader.color);
-            _gl.enableVertexAttribArray(_shader.size);
-
-            // Draw satellites
-            render(_gl.POINTS, _positionBuffer, _colorBuffer, _sizeBuffer, _satellites.length);
-
-            // Draw trajectory
-            if (_selectedSatellite !== null) {
-                render(_gl.LINE_STRIP, _positionLineBuffer, _colorLineBuffer, _sizeLineBuffer, TRAJECTORY_SEGMENTS);
-            }
-        }
-
-        function render(type, positions, colors, sizes, length) {
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, positions);
-            _gl.vertexAttribPointer(_shader.position, 3, _gl.FLOAT, false, 0, 0);
-
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, colors);
-            _gl.vertexAttribPointer(_shader.color, 4, _gl.FLOAT, false, 0, 0);
-
-            _gl.bindBuffer(_gl.ARRAY_BUFFER, sizes);
-            _gl.vertexAttribPointer(_shader.size, 1, _gl.FLOAT, false, 0, 0);
-
-            _gl.drawArrays(type, 0, length);
         }
     });
 });
