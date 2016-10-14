@@ -595,3 +595,86 @@ function (
         }
     });
 });
+
+//
+// Snippet to add satellites as small spheres rather than dots.
+//
+//'esri/layers/FeatureLayer',
+//'esri/symbols/PointSymbol3D',
+//'esri/symbols/ObjectSymbol3DLayer',
+//'esri/Graphic',
+//'esri/renderers/SimpleRenderer',
+//'esri/geometry/Point',
+//'esri/geometry/SpatialReference',
+//
+//FeatureLayer,
+//PointSymbol3D,
+//ObjectSymbol3DLayer,
+//Graphic,
+//SimpleRenderer,
+//Point,
+//SpatialReference,
+//
+//var date = new Date();
+//_view.map.add(new FeatureLayer({
+//    fields: [{
+//        name: "objectid",
+//        alias: "objectid",
+//        type: "oid"
+//    }],
+//    objectIdField: "objectid",
+//    geometryType: "point",
+//    spatialReference: { wkid: 4326 },
+//    source: satellites.map(function (v, i) {
+//        var pv = satellite.propagate(
+//            v.satrec,
+//            date.getUTCFullYear(),
+//            date.getUTCMonth() + 1,
+//            date.getUTCDate(),
+//            date.getUTCHours(),
+//            date.getUTCMinutes(),
+//            date.getUTCSeconds()
+//        );
+//        if (pv.position === null ||
+//            pv.position === undefined ||
+//            isNaN(pv.position.x) ||
+//            isNaN(pv.position.y) ||
+//            isNaN(pv.position.z)) {
+//            return null;
+//        }
+//        var render = [
+//            pv.position.x * 1000,
+//            pv.position.y * 1000,
+//            pv.position.z * 1000
+//        ];
+//        var geographic = Array(3);
+//        ExternalRenderers.fromRenderCoordinates(_view, render, 0, geographic, 0, SpatialReference.WGS84, 1);
+//        return new Graphic({
+//            geometry: new Point({
+//                x: geographic[0],
+//                y: geographic[1],
+//                z: geographic[2]
+//            }),
+//            attributes: {
+//                objectid: i
+//            }
+//        });
+//    }).filter(function (v) {
+//        return v !== null;
+//    }),
+//    renderer: new SimpleRenderer({
+//        symbol: new PointSymbol3D({
+//            symbolLayers: [new ObjectSymbol3DLayer({
+//                width: 100000,
+//                height: 100000,
+//                depth: 100000,
+//                resource: {
+//                    primitive: 'sphere'
+//                },
+//                material: {
+//                    color: 'white'
+//                }
+//            })]
+//        })
+//    })
+//}));

@@ -234,14 +234,12 @@
                 if (!satellite.selected) {
                     continue;
                 }
-                var eci = this._getSatelliteLocation(satellite.satrec, this.date);
-                if (eci === null || eci === undefined || isNaN(eci.x) || isNaN(eci.y) || isNaN(eci.z)) {
-                    continue;
-                }
+                var index = this.index.indexOf(i);
+                var p = this.normal.geometry.getAttribute('position');
                 vertex.push(
-                    eci.x * 1000,
-                    eci.y * 1000,
-                    eci.z * 1000
+                    p.getX(index),
+                    p.getY(index),
+                    p.getZ(index)
                 );
             }
 
