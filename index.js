@@ -69,8 +69,8 @@ function (
         var GEOSYNCHRONOUS_ORBIT = 35786;
 
         // Satellite database urls.
-        var NASA_SATELLITE_DATABASE = 'http://nssdc.gsfc.nasa.gov/nmc/masterCatalog.do?sc={0}'; // use International id
-        var N2YO_SATELLITE_DATABASE = 'http://www.n2yo.com/satellite/?s={0}';                   // use NORAD id
+        var NASA_SATELLITE_DATABASE = 'https://nssdc.gsfc.nasa.gov/nmc/masterCatalog.do?sc={0}'; // use International id
+        var N2YO_SATELLITE_DATABASE = 'https://www.n2yo.com/satellite/?s={0}';                   // use NORAD id
 
         // Rendering variables.
         var _satelliteRenderer = null;
