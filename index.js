@@ -212,15 +212,18 @@ function (
             resetUI();
             switch ($(this).attr('data-value')) {
                 case 'american-satellites':
-                    $('.rc-country > button[data-value="US"]').addClass('active').siblings().removeClass('active');
+                    $('.rc-country > button').removeClass('active');
+                    $('.rc-country > button[data-value="US"]').addClass('active');
                     selectSatellites();
                     break;
                 case 'chinese-satellites':
-                    $('.rc-country > button[data-value="PRC"]').addClass('active').siblings().removeClass('active');
+                    $('.rc-country > button').removeClass('active');
+                    $('.rc-country > button[data-value="PRC"]').addClass('active');
                     selectSatellites();
                     break;
                 case 'russian-satellites':
-                    $('.rc-country > button[data-value="CIS"]').addClass('active').siblings().removeClass('active');
+                    $('.rc-country > button').removeClass('active');
+                    $('.rc-country > button[data-value="CIS"]').addClass('active');
                     selectSatellites();
                     break;
                 case 'space-stations':
