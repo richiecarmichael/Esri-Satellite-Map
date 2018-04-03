@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml'>
-<head>
+<head prefix='og: http://ogp.me/ns#'>
     <!--
 
       Copyright 2015 Esri
@@ -39,18 +39,17 @@
     <link type='image/ico' rel='icon' href='img/favicon.ico' />
 
     <link type='text/css' rel='stylesheet' href='//fonts.googleapis.com/css?family=Orbitron:400,700|Oswald'>
-    <link type='text/css' rel='stylesheet' href='//js.arcgis.com/4.1/esri/css/main.css'>
+    <link type='text/css' rel='stylesheet' href='//js.arcgis.com/4.6/esri/css/main.css'>
     <link type='text/css' rel='stylesheet' href='css/bootstrap.min.css'>
-    <link type='text/css' rel='stylesheet' href='css/bootstrap-theme.min.css'>
     <link type='text/css' rel='stylesheet' href='css/bootstrap-slider.min.css'>
     <link type='text/css' rel='stylesheet' href='index.css' />
 
     <script type='text/javascript' src='js/jquery-3.1.1.min.js'></script>
     <script type='text/javascript' src='js/bootstrap.min.js'></script>
     <script type='text/javascript' src='js/bootstrap-slider.min.js'></script>
-    <script type='text/javascript' src='js/satellite.js'></script>
+    <script type='text/javascript' src='js/satellite.min.js'></script>
     <script type='text/javascript' src='js/three.min.js'></script>
-    <script type='text/javascript' src='//js.arcgis.com/4.1/'></script>
+    <script type='text/javascript' src='//js.arcgis.com/4.6/'></script>
     <script type='text/javascript' src='index.js'></script>
     <script>
         (function (i, s, o, g, r, a, m) {
@@ -70,7 +69,7 @@
                 <div class='rc-heading'>Quick Links</div>
                 <div class='btn-group btn-group-sm'>
                     <div class='btn-group btn-group-sm'>
-                        <button class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown' aria-expanded='false'>
+                        <button class='btn btn-default dropdown-toggle rc-button-square' type='button' data-toggle='dropdown' aria-expanded='false'>
                             Presets <span class='caret'></span>
                         </button>
                         <ul id='dropdown-presets' class='dropdown-menu' role='menu'>
@@ -92,35 +91,35 @@
                             <li><a href='#' data-value='high-earth-orbit'>High Earth Orbit</a></li>
                         </ul>
                     </div>
-                    <button id='buttonReset' type='button' class='btn btn-default' data-toggle='tooltip' data-placement='bottom' title='Resets UI and clears selected satellites'>Reset</button>
+                    <button id='buttonReset' type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='bottom' title='Resets UI and clears selected satellites'>Reset</button>
                 </div>
                 <div class='rc-heading'>Country</div>
                 <div class='btn-group btn-group-sm rc-country' role='group'>
-                    <button type='button' class='btn btn-default active' data-value='none'>All</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='AUS' title='Australia'>AU</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='CA' title='Canada'>CA</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='PRC' title='China'>CN</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='FR' title='France and Italy'>FR</button>
+                    <button type='button' class='btn btn-default rc-button-square active' data-value='none'>All</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='AUS' title='Australia'>AU</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='CA' title='Canada'>CA</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='PRC' title='China'>CN</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='FR' title='France and Italy'>FR</button>
                 </div>
                 <div class='btn-group btn-group-sm rc-country' role='group'>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='IND' title='India'>IN</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='JPN' title='Japan'>JP</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='CIS' title='Russia'>RU</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='UK' title='United Kingdom'>UK</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='US' title='United States of America'>US</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='IND' title='India'>IN</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='JPN' title='Japan'>JP</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='CIS' title='Russia'>RU</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='UK' title='United Kingdom'>UK</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='US' title='United States of America'>US</button>
                 </div>
                 <div class='rc-heading'>Type</div>
                 <div class='btn-group btn-group-sm rc-type' role='group'>
-                    <button type='button' class='btn btn-default active' data-value='none'>All</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='junk' title='Satellite debris, rockets and boosters'>Junk</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='not-junk' title='Normal satellites'>Not Junk</button>
+                    <button type='button' class='btn btn-default rc-button-square active' data-value='none'>All</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='junk' title='Satellite debris, rockets and boosters'>Junk</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='not-junk' title='Normal satellites'>Not Junk</button>
                 </div>
                 <div class='rc-heading'>Size</div>
                 <div class='btn-group btn-group-sm rc-size' role='group'>
-                    <button type='button' class='btn btn-default active' data-value='none'>All</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='SMALL' title='Small radar cross-section'>Sm</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='MEDIUM' title='Medium radar cross-section'>Med</button>
-                    <button type='button' class='btn btn-default' data-toggle='tooltip' data-placement='top' data-value='LARGE' title='Large radar cross-section'>Lg</button>
+                    <button type='button' class='btn btn-default rc-button-square active' data-value='none'>All</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='SMALL' title='Small radar cross-section'>Sm</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='MEDIUM' title='Medium radar cross-section'>Med</button>
+                    <button type='button' class='btn btn-default rc-button-square' data-toggle='tooltip' data-placement='top' data-value='LARGE' title='Large radar cross-section'>Lg</button>
                 </div>
                 <div class='rc-heading'>Launch Date</div>
                 <input id='slider-launchdate' />
@@ -176,7 +175,7 @@
                 <div class='rc-heading'>Links</div>
                 <a id='link-nasa' href='#' class='rc-vertical'>NASA</a>
                 <a id='link-n2yo' href='#' class='rc-vertical'>N2YO</a>
-                <button type='button' class='btn btn-default rc-close'>Back</button>
+                <button type='button' class='btn btn-default rc-close rc-button-square'>Back</button>
             </div>
             <div id='bottom-left-help' class='rc-panel' data-panel='help'>
                 <div class='rc-title'>HELP</div>
@@ -191,7 +190,7 @@
                     <p>It is important to note that satellite positions are derived from an ephemeris database downloaded in May, 2015. As such this app will not display satellites launched since then or reflect intentionally or unintentionally orbital adjustments. Similarly atmospheric friction and gravitational forces are likely to influence orbital position. However the different between projected and actual position is unlikely to be perceptible at the scale used.</p>
                     <p>If you encounter any problems or have suggestions for improvements please don't hesiste to let us know <a href='https://github.com/richiecarmichael/Esri-Satellite-Map/issues'>here</a>.</p>
                 </div>
-                <button type='button' class='btn btn-default rc-close'>Back</button>
+                <button type='button' class='btn btn-default rc-close rc-button-square'>Back</button>
             </div>
             <div id='bottom-left-about' class='rc-panel' data-panel='about'>
                 <div class='rc-title'>ABOUT</div>
@@ -208,7 +207,7 @@
                     <p>Satellite descriptions and <a href='https://en.wikipedia.org/wiki/Ephemeris'>ephemeris</a> are sourced from <a href='https://www.space-track.org/'>Space-Tracker</a> a site maintained by the <a href='https://www.stratcom.mil/factsheets/7/JFCC_Space/'>Joint Functional Component Command for Space</a>. The <a href='https://github.com/shashwatak/satellite-js'>satellite-js</a> JavaScript library is used to convert the <a href='https://en.wikipedia.org/wiki/Two-line_element_set'>TLE</a> for each satellite into a geographic location.</p>
                     <p>Souce code for this application can be found <a href='https://github.com/richiecarmichael/Esri-Satellite-Map'>here</a>.</p>
                 </div>
-                <button type='button' class='btn btn-default rc-close'>Back</button>
+                <button type='button' class='btn btn-default rc-close rc-button-square'>Back</button>
             </div>
         </div>
         <div id='bottom-right'>
