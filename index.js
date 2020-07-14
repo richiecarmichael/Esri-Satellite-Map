@@ -5,7 +5,7 @@
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at:
-   http://www.apache.org/licenses/LICENSE-2.0
+   https://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,8 +44,8 @@ require({
             'use strict';
 
             // Files
-            var TLE = 'data/tle.20171129.txt';
-            var OIO = 'data/oio.20171129.txt';
+            var TLE = 'data/tle.20200714.txt';
+            var OIO = 'data/oio.20200714.txt';
 
             // Well known satellite constellations.
             var GPS = [20959, 22877, 23953, 24876, 25933, 26360, 26407, 26605, 26690, 27663, 27704, 28129, 28190, 28361, 28474, 28874, 29486, 29601, 32260, 32384, 32711, 35752, 36585, 37753, 38833, 39166, 39533, 39741, 40105, 40294, 40534];
@@ -61,10 +61,10 @@ require({
             // Orbital altitude definitions.
             var LOW_ORBIT = 2000;
             var GEOSYNCHRONOUS_ORBIT = 35786;
-
+            
             // Satellite database urls.
-            var NASA_SATELLITE_DATABASE = 'https://nssdc.gsfc.nasa.gov/nmc/masterCatalog.do?sc='; // use International id
-            var N2YO_SATELLITE_DATABASE = 'https://www.n2yo.com/satellite/?s=';                   // use NORAD id
+            var NASA_SATELLITE_DATABASE = 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id='; // use International id
+            var N2YO_SATELLITE_DATABASE = 'https://www.n2yo.com/satellite/?s=';                            // use NORAD id
 
             // Rendering variables.
             var renderer = null;

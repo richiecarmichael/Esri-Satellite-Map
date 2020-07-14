@@ -1,9 +1,7 @@
 ﻿define([
-    'esri/Camera',
     'esri/core/declare',
     'esri/views/3d/externalRenderers'
 ], function (
-    Camera,
     declare,
     externalRenderers
 ) {
@@ -12,7 +10,6 @@
 
         // Constants
         var THREE = window.THREE;
-        var RADIUS = 6378137;
         var THRESHOLD = 1000000;
         var TRAJECTORY_SEGMENTS = 1000;
 
